@@ -11,17 +11,17 @@ Le site sert à présenter l'entreprise et ses services, et à générer des dem
 
 ## Stack technique
 
-| Élément | Choix |
-| --- | --- |
-| Framework | Astro + TypeScript |
-| Style | Tailwind CSS |
-| Contenu des services | Content collections (un fichier Markdown par service) |
-| Formulaires | Web3Forms, protégés par Cloudflare Turnstile et un champ honeypot |
-| Hébergement | Cloudflare Pages, déploiement automatique depuis GitHub |
-| Statistiques | Cloudflare Web Analytics (sans cookies) |
-| Icônes | Tabler, via `astro-icon` |
-| Polices | Fontsource, hébergées sur le site |
-| SEO | Sitemap automatique, données structurées `LocalBusiness` |
+| Élément              | Choix                                                             |
+| -------------------- | ----------------------------------------------------------------- |
+| Framework            | Astro + TypeScript                                                |
+| Style                | Tailwind CSS                                                      |
+| Contenu des services | Content collections (un fichier Markdown par service)             |
+| Formulaires          | Web3Forms, protégés par Cloudflare Turnstile et un champ honeypot |
+| Hébergement          | Cloudflare Pages, déploiement automatique depuis GitHub           |
+| Statistiques         | Cloudflare Web Analytics (sans cookies)                           |
+| Icônes               | Tabler, via `astro-icon`                                          |
+| Polices              | Fontsource, hébergées sur le site                                 |
+| SEO                  | Sitemap automatique, données structurées `LocalBusiness`          |
 
 ---
 
@@ -96,10 +96,10 @@ npm run preview    # prévisualiser le build
 
 À définir dans un fichier `.env` en local (non versionné) et dans les réglages du projet Cloudflare Pages :
 
-| Variable | Rôle |
-| --- | --- |
-| `PUBLIC_WEB3FORMS_KEY` | Clé d'accès Web3Forms (les demandes arrivent sur l'adresse du client) |
-| `PUBLIC_TURNSTILE_SITE_KEY` | Clé de site Cloudflare Turnstile |
+| Variable                    | Rôle                                                                  |
+| --------------------------- | --------------------------------------------------------------------- |
+| `PUBLIC_WEB3FORMS_KEY`      | Clé d'accès Web3Forms (les demandes arrivent sur l'adresse du client) |
+| `PUBLIC_TURNSTILE_SITE_KEY` | Clé de site Cloudflare Turnstile                                      |
 
 Les noms ci-dessus sont proposés et peuvent changer pendant le développement.
 
@@ -171,4 +171,3 @@ Champs requis : nom, téléphone, e-mail, adresse, description de la demande.
 - Logo : à créer par le graphiste (thème : nettoyage de bureaux ou de bâtiments)
 - Photos : aucune existante, elles seront générées par IA (nettoyage, bureaux, bâtiments)
 - Slogan : aucun pour le moment
-
