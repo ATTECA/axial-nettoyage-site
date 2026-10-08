@@ -5,6 +5,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 import sitemap from "@astrojs/sitemap";
 
+import icon from "astro-icon";
+
 // https://astro.build/config
 export default defineConfig({
   vite: {
@@ -12,5 +14,5 @@ export default defineConfig({
   },
   site: "https://axialnettoyage.fr",
 
-  integrations: [sitemap()],
+  integrations: [sitemap(), icon()],
 });
