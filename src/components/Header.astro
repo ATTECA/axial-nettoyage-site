@@ -1,0 +1,280 @@
+---
+import { Icon } from "astro-icon/components";
+import Logo from "../assets/logo.svg";
+import { site, services } from "../data/site";
+
+// "07 64 00 86 49" -> "+33764008649" for the tel: link
+const phoneHref = "tel:+33" + site.phone.replace(/\s/g, "").slice(1);
+
+// Squeegee wipe: a lime bar under the link that sweeps in from the left
+// on hover, and leaves to the right when the mouse goes away.
+const navLink =
+  "relative py-1 hover:text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-right after:scale-x-0 after:rounded-full after:bg-accent after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100 motion-reduce:after:transition-none";
+
+// Same gesture as a background: a pale blue fill sweeps in from the left.
+const serviceLink =
+  "relative block overflow-hidden rounded-lg px-3 py-2 hover:text-primary before:absolute before:inset-0 before:-z-10 before:origin-right before:scale-x-0 before:bg-background before:transition-transform before:duration-300 before:ease-out hover:before:origin-left hover:before:scale-x-100 focus-visible:before:origin-left focus-visible:before:scale-x-100 motion-reduce:before:transition-none";
+
+// Glossy pill, shared by every button:
+// - before: = light reflection on the top half
+// - after: = a band of light that crosses the pill once on hover
+//   (transition only on hover, so it jumps back invisibly when the mouse leaves)
+// - lifts 2px on hover, presses back down on click
+const glossy =
+  "group/pill relative isolate items-center gap-2 overflow-hidden rounded-full font-heading font-semibold whitespace-nowrap transition duration-200 before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-1/2 before:bg-linear-to-b before:from-white/40 before:to-white/5 after:absolute after:inset-y-0 after:left-0 after:w-1/3 after:-translate-x-full after:skew-x-[-20deg] after:bg-linear-to-r after:from-transparent after:via-white/50 after:to-transparent hover:-translate-y-0.5 hover:after:translate-x-[400%] hover:after:transition-transform hover:after:duration-700 hover:after:ease-out active:translate-y-0 motion-reduce:transition-none motion-reduce:after:hidden";
+
+// Colours: gradient + a shadow tinted with the button's own colour
+const glossyBlue =
+  "bg-linear-to-b from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_6px_16px_-4px_rgb(49_123_185/0.6)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_10px_24px_-6px_rgb(49_123_185/0.75)] active:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_3px_8px_-2px_rgb(49_123_185/0.6)]";
+
+// Lime keeps dark (ink) text: white on lime is unreadable (contrast 1.8:1)
+const glossyLime =
+  "bg-linear-to-b from-[#c6e47a] to-accent text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-2px_0_rgb(110_150_30/0.35),0_6px_16px_-4px_rgb(22_50_79/0.45)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-2px_0_rgb(110_150_30/0.35),0_10px_24px_-6px_rgb(22_50_79/0.55)] active:shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-1px_0_rgb(110_150_30/0.35),0_3px_8px_-2px_rgb(22_50_79/0.45)]";
+
+const glossyWhite =
+  "bg-linear-to-b from-white to-[#dfeaf3] text-primary shadow-[inset_0_-2px_0_rgb(49_123_185/0.15),0_6px_16px_-4px_rgb(22_50_79/0.45)]";
+
+// Arrow that nudges right on hover
+const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
+---
+
+<!-- Full width, frosted glass: translucent background + blur of what's behind -->
+<header
+  id="header-bar"
+  class="group/bar sticky top-0 z-50 border-b border-white/50 bg-linear-to-r from-primary/10 via-white/55 to-accent/15 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 data-scrolled:shadow-lg data-scrolled:shadow-ink/5"
+>
+  <div class="flex h-18 items-center justify-between px-o5 transition-all duration-300 group-data-scrolled/bar:h-14 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8 lg:px-20">
+    <!-- Logo -->
+    <a href="/" aria-label="Axial Nettoyage, accueil">
+      <Logo class="h-11 w-auto transition-all duration-300 group-data-scrolled/bar:h-9" />
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="hidden md:block" aria-label="Navigation principale">
+      <ul class="flex items-center gap-8 text-sm font-medium text-ink">
+        <li>
+          <a href="/" class={navLink}>
+            Accueil
+          </a>
+        </li>
+
+        <!-- Services dropdown: opens on hover or keyboard focus -->
+        <li class="group relative">
+          <a href="/services" class:list={[navLink, "flex items-center gap-1"]}>
+            Services
+            <Icon
+              name="tabler:chevron-down"
+              class="size-4 transition-transform group-hover:rotate-180"
+            />
+          </a>
+
+          <!-- Panel: fades in and slides down a few px.
+               pt-4 = invisible bridge so it doesn't close while the mouse moves down -->
+          <div class="invisible absolute top-full left-1/2 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition duration-200 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none">
+            <div class="grid w-172 grid-cols-[1fr_16.5rem] gap-3 rounded-2xl border border-white/60 bg-white/95 p-3 shadow-xl shadow-ink/10 backdrop-blur-xl">
+              <!-- Left: the 7 services -->
+              <ul class="isolate">
+                {services.map((service) => (
+                  <li>
+                    <a href={`/services/${service.slug}`} class={serviceLink}>
+                      {service.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <!-- Right: quote card -->
+              <!-- TODO: confirm "sous 24h" with the client before going live -->
+              <div class="flex flex-col justify-between rounded-xl bg-linear-to-br from-primary to-secondary p-5 text-white">
+                <div>
+                  <p class="font-heading text-lg leading-snug font-semibold">
+                    Devis gratuit sous 24h
+                  </p>
+                  <p class="mt-2 text-sm text-white/80">
+                    Décrivez votre besoin, on revient vers vous rapidement.
+                  </p>
+                </div>
+                <a
+                  href="/devis"
+                  class:list={[
+                    glossy,
+                    glossyLime,
+                    "mt-5 inline-flex justify-center px-4 py-2.5 text-sm",
+                  ]}
+                >
+                  Demander un devis
+                  <Icon name="tabler:arrow-right" class={arrow} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <a href="/devis" class={navLink}>
+            Devis
+          </a>
+        </li>
+        <li>
+          <a href="/contact" class={navLink}>
+            Contact
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Phone pill (desktop) -->
+    <a
+      href={phoneHref}
+      class:list={[
+        glossy,
+        glossyBlue,
+        "hidden justify-self-end px-5 py-2.5 text-sm md:inline-flex",
+      ]}
+    >
+      <Icon
+        name="tabler:phone"
+        class="size-4 transition-transform group-hover/pill:-rotate-12"
+      />
+      {site.phone}
+    </a>
+
+    <!-- Menu button (mobile) -->
+    <button
+      id="menu-open"
+      class="text-ink md:hidden"
+      aria-label="Ouvrir le menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <Icon name="tabler:menu-2" class="size-7" />
+    </button>
+  </div>
+</header>
+
+<!--
+  Mobile menu: full screen, brand blue.
+  It sits OUTSIDE the <header>: the header's backdrop-blur would otherwise
+  trap this fixed element inside the header's box instead of the whole screen.
+-->
+<div
+  id="mobile-menu"
+  class="invisible fixed inset-0 z-60 flex flex-col overflow-y-auto bg-linear-to-b from-primary to-[#25629a] text-white opacity-0 transition duration-300 data-open:visible data-open:opacity-100 md:hidden motion-reduce:transition-none"
+  aria-label="Menu"
+>
+  <!-- Top row: white logo + close button -->
+  <div class="flex h-18 shrink-0 items-center justify-between px-5">
+    <a href="/" aria-label="Axial Nettoyage, accueil">
+      <!-- brightness-0 invert = turns the colour logo fully white -->
+      <Logo class="h-11 w-auto brightness-0 invert" />
+    </a>
+    <button id="menu-close" aria-label="Fermer le menu">
+      <Icon name="tabler:x" class="size-7" />
+    </button>
+  </div>
+
+  <nav class="flex-1 px-5 pt-6" aria-label="Navigation mobile">
+    <ul class="flex flex-col gap-1 font-heading text-3xl font-semibold">
+      <li>
+        <a href="/" class="block py-3">
+          Accueil
+        </a>
+      </li>
+      <li>
+        <!-- Accordion: <details> opens/closes on its own, no JavaScript needed -->
+        <details class="group">
+          <summary class="flex cursor-pointer list-none items-center justify-between py-3 [&::-webkit-details-marker]:hidden">
+            Services
+            <Icon
+              name="tabler:chevron-down"
+              class="size-7 transition-transform group-open:rotate-180"
+            />
+          </summary>
+          <ul class="mb-2 border-l-2 border-accent/70 pl-4 font-sans text-base font-normal text-white/85">
+            {services.map((service) => (
+              <li>
+                <a href={`/services/${service.slug}`} class="block py-2">
+                  {service.title}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href="/services" class="block py-2 font-medium text-accent">
+                Tous les services →
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+      <li>
+        <a href="/devis" class="block py-3">
+          Devis
+        </a>
+      </li>
+      <li>
+        <a href="/contact" class="block py-3">
+          Contact
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Bottom: actions within thumb reach -->
+  <div class="flex shrink-0 flex-col gap-3 px-5 pt-6 pb-8">
+    <a
+      href="/devis"
+      class:list={[glossy, glossyLime, "flex justify-center px-5 py-3.5"]}
+    >
+      Demander un devis
+      <Icon name="tabler:arrow-right" class={arrow} />
+    </a>
+    <a
+      href={phoneHref}
+      class:list={[glossy, glossyWhite, "flex justify-center px-5 py-3.5"]}
+    >
+      <Icon name="tabler:phone" class="size-5" />
+      {site.phone}
+    </a>
+  </div>
+</div>
+
+<script>
+  // Runs in the browser.
+  const bar = document.getElementById("header-bar")!;
+  const menu = document.getElementById("mobile-menu")!;
+  const openButton = document.getElementById("menu-open")!;
+  const closeButton = document.getElementById("menu-close")!;
+
+  // ----- Mobile menu -----
+  const setMenu = (open: boolean) => {
+    menu.toggleAttribute("data-open", open);
+    openButton.setAttribute("aria-expanded", String(open));
+    // Stop the page behind from scrolling while the menu is open
+    document.documentElement.classList.toggle("overflow-hidden", open);
+    // Move keyboard focus into the menu, and back to ☰ when it closes
+    (open ? closeButton : openButton).focus();
+  };
+
+  openButton.addEventListener("click", () => setMenu(true));
+  closeButton.addEventListener("click", () => setMenu(false));
+
+  // Close with the Escape key
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menu.hasAttribute("data-open"))
+      setMenu(false);
+  });
+
+  // Close if the screen becomes wide (phone rotated, window resized)
+  window
+    .matchMedia("(min-width: 48rem)")
+    .addEventListener("change", (event) => {
+      if (event.matches && menu.hasAttribute("data-open")) setMenu(false);
+    });
+
+  // ----- Header shrinks + gets a shadow once the page is scrolled -----
+  const onScroll = () => {
+    bar.toggleAttribute("data-scrolled", window.scrollY > 20);
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

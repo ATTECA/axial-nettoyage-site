@@ -2,6 +2,15 @@
 import "../styles/global.css";
 import "@fontsource-variable/sora";
 import "@fontsource-variable/inter";
+import Header from "../components/Header.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+
 ---
 
 <html lang="fr">
@@ -14,9 +23,14 @@ import "@fontsource-variable/inter";
 
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-    <title>Axial</title>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
   </head>
-  <body>
-    <slot />
+  <body class="bg-background text-ink">
+    <Header />
+    <main>
+      <slot />
+    </main>
   </body>
 </html>
