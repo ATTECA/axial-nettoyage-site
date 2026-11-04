@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # fichiers branding
 Branding/
+
+# fichiers système Windows
+desktop.ini
