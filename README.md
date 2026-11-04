@@ -11,17 +11,17 @@ Le site sert à présenter l'entreprise et ses services, et à générer des dem
 
 ## Stack technique
 
-| Élément              | Choix                                                             |
-| -------------------- | ----------------------------------------------------------------- |
-| Framework            | Astro + TypeScript                                                |
-| Style                | Tailwind CSS                                                      |
-| Contenu des services | Content collections (un fichier Markdown par service)             |
-| Formulaires          | Web3Forms, protégés par Cloudflare Turnstile et un champ honeypot |
-| Hébergement          | Cloudflare Pages, déploiement automatique depuis GitHub           |
-| Statistiques         | Cloudflare Web Analytics (sans cookies)                           |
-| Icônes               | Tabler, via `astro-icon`                                          |
-| Polices              | Fontsource, hébergées sur le site                                 |
-| SEO                  | Sitemap automatique, données structurées `LocalBusiness`          |
+| Élément              | Choix                                                                           |
+| -------------------- | ------------------------------------------------------------------------------- |
+| Framework            | Astro + TypeScript                                                              |
+| Style                | Tailwind CSS                                                                    |
+| Contenu des services | Content collections (un fichier Markdown par service)                           |
+| Formulaires          | Web3Forms (offre gratuite), protégés par un champ honeypot (hCaptcha en option) |
+| Hébergement          | Cloudflare Workers (fichiers statiques), déploiement automatique depuis GitHub  |
+| Statistiques         | Cloudflare Web Analytics (sans cookies)                                         |
+| Icônes               | Tabler, via `astro-icon`                                                        |
+| Polices              | Fontsource, hébergées sur le site                                               |
+| SEO                  | Sitemap automatique, données structurées `LocalBusiness`                        |
 
 ---
 
@@ -83,34 +83,43 @@ public/
 
 ## Développement
 
-Prérequis : Node.js (version LTS) et npm.
+Prérequis : Node.js 22.12 ou plus récent, et npm.
 
 ```bash
 npm install        # installer les dépendances
 npm run dev        # serveur de développement (http://localhost:4321)
 npm run build      # build de production dans dist/
 npm run preview    # prévisualiser le build
+npm run format     # formater tout le code avec Prettier
 ```
+
+Le formatage se fait aussi automatiquement à l'enregistrement dans VS Code (réglages dans `.vscode/settings.json`, extensions Prettier et Astro requises).
+
+> **Note :** `package.json` contient un `overrides` qui force `@astrojs/compiler-rs` en version 0.5.1. La version 0.4.1 utilisée par `prettier-plugin-astro` est bloquée par le Contrôle intelligent des applications de Windows, ce qui empêche Prettier de fonctionner. Cet `overrides` pourra être retiré quand le plugin sera mis à jour.
 
 ### Variables d'environnement
 
-À définir dans un fichier `.env` en local (non versionné) et dans les réglages du projet Cloudflare Pages :
+À définir dans un fichier `.env` en local (non versionné) et dans les réglages du projet Cloudflare :
 
-| Variable                    | Rôle                                                                  |
-| --------------------------- | --------------------------------------------------------------------- |
-| `PUBLIC_WEB3FORMS_KEY`      | Clé d'accès Web3Forms (les demandes arrivent sur l'adresse du client) |
-| `PUBLIC_TURNSTILE_SITE_KEY` | Clé de site Cloudflare Turnstile                                      |
+| Variable               | Rôle                                                                  |
+| ---------------------- | --------------------------------------------------------------------- |
+| `PUBLIC_WEB3FORMS_KEY` | Clé d'accès Web3Forms (les demandes arrivent sur l'adresse du client) |
 
-Les noms ci-dessus sont proposés et peuvent changer pendant le développement.
+Ce nom est proposé et peut changer pendant le développement.
+
+> Cloudflare Turnstile n'est disponible que sur l'offre payante de Web3Forms. Le site utilise donc l'offre gratuite (250 envois par mois) avec un champ honeypot, et hCaptcha (gratuit) pourra être ajouté si le spam devient un problème.
 
 ---
 
 ## Déploiement
 
-1. Le dépôt GitHub est relié à Cloudflare Pages.
+Le site est hébergé sur **Cloudflare Workers**, en tant que site statique. Cloudflare fait évoluer Pages vers Workers ; pour un site statique, le fonctionnement et la gratuité sont les mêmes.
+
+1. Le dépôt GitHub est relié au projet Cloudflare Workers.
 2. Chaque push sur `main` déclenche un build et une mise en ligne.
-3. Réglages du build : commande `npm run build`, dossier de sortie `dist`.
-4. À la mise en ligne, on branche le domaine `axialnettoyage.fr` (OVH) sur Cloudflare Pages et on active Web Analytics.
+3. Réglages du build : commande `npm run build`, dossier de sortie `dist`, variable d'environnement `NODE_VERSION` = `22`.
+4. En attendant le domaine, le site est accessible sur son adresse `*.workers.dev` (à activer dans **Settings → Domains & Routes**).
+5. À la mise en ligne, on branche le domaine `axialnettoyage.fr` (OVH) sur le Worker et on active Web Analytics.
 
 ---
 
