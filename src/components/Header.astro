@@ -60,7 +60,7 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
 
         <!-- Services dropdown: opens on hover or keyboard focus -->
         <li class="group relative">
-          <a href="/services" class:list={[navLink, "flex items-center gap-1"]}>
+          <a href="/#services" class:list={[navLink, "flex items-center gap-1"]}>
             Services
             <Icon
               name="tabler:chevron-down"
@@ -208,17 +208,27 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
               class="size-7 transition-transform group-open:rotate-180"
             />
           </summary>
-          <ul class="mb-2 border-l-2 border-accent/70 pl-4 font-sans text-base font-normal text-white/85">
+          <!-- Each service = a tappable row: light background + › arrow,
+               the usual phone convention for "this opens a page" -->
+          <ul class="mb-3 flex flex-col gap-2 font-sans text-base font-medium">
             {services.map((service) => (
               <li>
-                <a href={`/services/${service.slug}`} class="block py-2">
+                <a
+                  href={`/services/${service.slug}`}
+                  class="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/10 px-4 py-3 transition active:scale-[0.98] active:bg-white/20"
+                >
                   {service.title}
+                  <Icon name="tabler:chevron-right" class="size-5 shrink-0 text-accent" />
                 </a>
               </li>
             ))}
             <li>
-              <a href="/services" class="block py-2 font-medium text-accent">
-                Tous les services →
+              <a
+                href="/#services"
+                class="flex items-center gap-1 px-1 py-2 font-semibold text-accent"
+              >
+                Tous les services
+                <Icon name="tabler:arrow-right" class="size-5" />
               </a>
             </li>
           </ul>
@@ -275,6 +285,12 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
 
   openButton.addEventListener("click", () => setMenu(true));
   closeButton.addEventListener("click", () => setMenu(false));
+
+  // Close when a link is tapped: needed for /#services on the home page,
+  // where the browser only scrolls (no new page), so the menu would stay open
+  menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenu(false));
+  });
 
   // Close with the Escape key
   document.addEventListener("keydown", (event) => {
