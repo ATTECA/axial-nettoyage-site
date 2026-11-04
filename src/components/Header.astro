@@ -140,14 +140,27 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
     </a>
 
     <!-- Menu button (mobile) -->
+    <!-- Glossy round button, 44px = Apple's minimum touch size.
+         3 bars drawn with spans: 2 white + 1 shorter lime (a nod to the squeegee).
+         On press, the bars even out. -->
     <button
       id="menu-open"
-      class="text-ink md:hidden"
+      class:list={[
+        glossy,
+        glossyBlue,
+        "flex size-11 flex-col items-end justify-center gap-1.25 pr-3 md:hidden",
+      ]}
       aria-label="Ouvrir le menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
     >
-      <Icon name="tabler:menu-2" class="size-7" />
+      <span class="h-0.5 w-5 rounded-full bg-white"></span>
+      <span
+        class="h-0.5 w-3.5 rounded-full bg-white transition-all duration-200 group-active/pill:w-5"
+      ></span>
+      <span
+        class="h-0.5 w-2.5 rounded-full bg-accent transition-all duration-200 group-active/pill:w-5"
+      ></span>
     </button>
   </div>
 </header>
@@ -168,8 +181,13 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
       <!-- brightness-0 invert = turns the colour logo fully white -->
       <Logo class="h-11 w-auto brightness-0 invert" />
     </a>
-    <button id="menu-close" aria-label="Fermer le menu">
-      <Icon name="tabler:x" class="size-7" />
+    <!-- Same size and position as ☰, in frosted white on the blue -->
+    <button
+      id="menu-close"
+      class="flex size-11 items-center justify-center rounded-full border border-white/30 bg-white/15 shadow-[inset_0_1px_0_rgb(255_255_255/0.4)] backdrop-blur-md transition active:scale-95"
+      aria-label="Fermer le menu"
+    >
+      <Icon name="tabler:x" class="size-6" />
     </button>
   </div>
 
