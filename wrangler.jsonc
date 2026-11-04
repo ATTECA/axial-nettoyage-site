@@ -1,0 +1,15 @@
+// Cloudflare configuration (Wrangler).
+// Read by Cloudflare at each deployment: production (main) and previews (other branches).
+{
+  // Must match the Worker's name in the Cloudflare dashboard
+  "name": "axial-nettoyage-site",
+  "compatibility_date": "2026-11-04",
+
+  // Static site: Cloudflare serves the files from dist/ (the output of `npm run build`)
+  "assets": {
+    "directory": "./dist",
+  },
+
+  // Required by `wrangler preview`, the command Cloudflare runs for non-main branches
+  "previews": {},
+}
