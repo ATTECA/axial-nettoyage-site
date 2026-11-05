@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Logo from "../assets/logo.svg";
+import LogoTypo from "../assets/logo-typo.svg";
 import { site, services, phoneHref } from "../data/site";
 import { glossy, glossyBlue, glossyLime, glossyWhite, arrow } from "../lib/buttons";
 
@@ -28,9 +29,12 @@ const serviceLink =
     <a
       href="/"
       aria-label="Axial Nettoyage, accueil"
-      class="relative isolate justify-self-start before:absolute before:-inset-y-2 before:-right-28 before:-left-6 before:-z-10 before:rounded-l-full before:bg-[linear-gradient(to_right,rgb(255_255_255/0.5),white_20%,white_40%,transparent)] before:blur-[1px]"
+      class="relative isolate justify-self-start before:absolute before:-inset-y-1 before:-right-28 before:-left-6 before:-z-10 before:rounded-l-full before:bg-[linear-gradient(to_right,rgb(255_255_255/0.5),white_20%,white_40%,transparent)] before:blur-[1px]"
     >
-      <Logo class="h-11 w-auto transition-all duration-300 group-data-scrolled/bar:h-9" />
+      <!-- Typographic logo (text only, no squeegee).
+           Its SVG has empty space above "AXIAL" so that AXIAL, not the whole logo,
+           is centred vertically: hence h-13 to keep the letters the same size -->
+      <LogoTypo class="h-13 w-auto transition-all duration-300 group-data-scrolled/bar:h-10" />
     </a>
 
     <!-- Desktop navigation -->

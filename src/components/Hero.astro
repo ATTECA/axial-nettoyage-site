@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import heroImage from "../assets/hero.png";
+import LogoAxial from "../assets/logo-axial.svg";
 import { phoneHref } from "../data/site";
 import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
 ---
@@ -42,9 +43,16 @@ import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
   <div class="w-full px-6 pt-40 pb-14 md:px-14 md:pt-48 md:pb-28 lg:px-32 3xl:px-[11vw]">
     <div class="max-w-3xl text-white">
       <h1 class="text-4xl leading-[1.1] font-semibold text-balance sm:text-5xl lg:text-6xl">
-        <!-- &nbsp; = non-breaking space: in French, the colon never starts a line.
+        <!-- "AXIAL" = the logo drawing (squeegee + sparkles), sized in em
+             so it follows the text size on every screen.
+             The letters are currentColor (= white here), the squeegee stays lime.
+             sr-only "Axial" = what Google and screen readers read instead of the drawing.
+             &nbsp; = non-breaking space: in French, the colon never starts a line.
              {" "} = explicit space, Astro drops the line break before the <span> -->
-        Axial Nettoyage&nbsp;: votre partenaire{" "}
+        <span class="sr-only">Axial</span><LogoAxial
+          class="inline-block h-[1.11em] w-auto align-[-0.17em]"
+          aria-hidden="true"
+        />{" "}Nettoyage&nbsp;: votre partenaire{" "}
         <span class="md:whitespace-nowrap"><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">propreté</span> à Montpellier</span>
       </h1>
 
