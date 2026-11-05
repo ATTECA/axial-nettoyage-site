@@ -1,10 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import Logo from "../assets/logo.svg";
-import { site, services } from "../data/site";
-
-// "07 64 00 86 49" -> "+33764008649" for the tel: link
-const phoneHref = "tel:+33" + site.phone.replace(/\s/g, "").slice(1);
+import { site, services, phoneHref } from "../data/site";
 
 // Squeegee wipe: a lime bar under the link that sweeps in from the left
 // on hover, and leaves to the right when the mouse goes away.
@@ -41,7 +38,7 @@ const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
 <!-- Full width, frosted glass: translucent background + blur of what's behind -->
 <header
   id="header-bar"
-  class="group/bar sticky top-0 z-50 border-b border-white/50 bg-linear-to-r from-primary/10 via-white/55 to-accent/15 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300 data-scrolled:shadow-lg data-scrolled:shadow-ink/5"
+  class="group/bar sticky top-0 z-50 bg-white/65 bg-linear-to-r from-primary/20 via-white/0 to-accent/30 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,transparent,rgb(49_123_185/0.35)_25%,rgb(168_207_69/0.7)_75%,transparent)] backdrop-blur-2xl backdrop-saturate-150 transition-shadow duration-300 data-scrolled:shadow-lg data-scrolled:shadow-ink/5"
 >
   <div class="flex h-18 items-center justify-between px-5 transition-all duration-300 group-data-scrolled/bar:h-14 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8 lg:px-20">
     <!-- Logo -->
