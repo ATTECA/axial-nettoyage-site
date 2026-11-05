@@ -1,0 +1,138 @@
+---
+import { Icon } from "astro-icon/components";
+import Logo from "../assets/logo.svg";
+import { site, services, phoneHref, emailHref, mapsHref } from "../data/site";
+
+// Computed at build time: the year updates each time the site is rebuilt
+const year = new Date().getFullYear();
+
+// Same squeegee wipe as the header, in white -> lime on the blue background
+const footerLink =
+  "relative text-white/75 transition-colors hover:text-white after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-full after:origin-right after:scale-x-0 after:bg-accent after:transition-transform after:duration-300 after:ease-out hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100 motion-reduce:after:transition-none";
+
+// The 3 columns of links
+const columns = [
+  {
+    title: "Services",
+    links: services.map((service) => ({
+      label: service.title,
+      href: `/services/${service.slug}`,
+    })),
+  },
+  {
+    title: "Navigation",
+    links: [
+      { label: "Accueil", href: "/" },
+      { label: "Demander un devis", href: "/devis" },
+      { label: "Contact", href: "/contact" },
+    ],
+  },
+  {
+    title: "Informations légales",
+    links: [
+      { label: "Mentions légales", href: "/mentions-legales" },
+      { label: "Politique de confidentialité", href: "/confidentialite" },
+    ],
+  },
+];
+
+// Contact block: icon + label + value (+ link)
+const contacts = [
+  { icon: "tabler:map-pin", label: "Siège social", value: site.address, href: mapsHref },
+  { icon: "tabler:phone", label: "Téléphone", value: site.phone, href: phoneHref },
+  { icon: "tabler:mail", label: "Email", value: site.email, href: emailHref },
+];
+---
+
+<footer
+  class="relative isolate overflow-hidden bg-linear-to-b from-primary to-[#25629a] text-white"
+>
+  <div class="px-5 pt-16 pb-8 md:px-8 lg:px-20">
+    <!-- Top: logo + contact | hours + area -->
+    <div class="grid gap-12 lg:grid-cols-2">
+      <div>
+        <a href="/" aria-label="Axial Nettoyage, accueil" class="inline-block">
+          <Logo class="h-12 w-auto brightness-0 invert" />
+        </a>
+
+        <ul class="mt-8 flex flex-col gap-5">
+          {
+            contacts.map((item) => (
+              <li class="flex items-start gap-3">
+                <span class="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10">
+                  <Icon name={item.icon} class="size-5 text-accent" />
+                </span>
+                <div>
+                  <p class="font-heading text-sm font-semibold">{item.label}</p>
+                  <a
+                    href={item.href}
+                    class:list={[footerLink, "text-sm"]}
+                    target={item.href === mapsHref ? "_blank" : undefined}
+                    rel={item.href === mapsHref ? "noopener" : undefined}
+                  >
+                    {item.value}
+                  </a>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Hours + area: frosted glass card, same family as the mobile menu -->
+      <div
+        class="flex flex-col gap-6 self-start rounded-2xl border border-white/15 bg-white/10 p-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.2)] backdrop-blur-md lg:mt-20 lg:ml-auto lg:w-full lg:max-w-md"
+      >
+        <div class="flex items-start gap-3">
+          <Icon name="tabler:clock" class="mt-0.5 size-5 shrink-0 text-accent" />
+          <div>
+            <p class="font-heading text-sm font-semibold">Horaires</p>
+            <p class="mt-1 text-sm text-white/75">{site.hours}</p>
+            <p class="text-sm text-white/75">{site.hoursNote}</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <Icon name="tabler:map-2" class="mt-0.5 size-5 shrink-0 text-accent" />
+          <div>
+            <p class="font-heading text-sm font-semibold">Zone d’intervention</p>
+            <p class="mt-1 text-sm text-white/75">{site.zone}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle: 3 columns of links -->
+    <nav
+      class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
+      aria-label="Liens du pied de page"
+    >
+      {
+        columns.map((column) => (
+          <div>
+            <p class="font-heading text-sm font-semibold tracking-wide text-white uppercase">
+              {column.title}
+            </p>
+            <!-- Small lime bar under each title, echo of the squeegee -->
+            <span class="mt-2 block h-0.5 w-8 rounded-full bg-accent" />
+            <ul class="mt-5 flex flex-col gap-3 text-sm">
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href} class={footerLink}>
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+
+    <!-- Bottom: copyright -->
+    <div
+      class="mt-14 border-t border-white/15 pt-6 text-xs text-white/60"
+    >
+      <p>© {year} {site.legalName}. Tous droits réservés.</p>
+    </div>
+  </div>
+</footer>
