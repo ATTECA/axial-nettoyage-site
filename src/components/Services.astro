@@ -1,0 +1,70 @@
+---
+import { Icon } from "astro-icon/components";
+import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import { services } from "../data/site";
+import { arrow } from "../lib/buttons";
+import { sectionX } from "../lib/layout";
+---
+
+<!--
+  id="services" = target of the /#services links (header + mobile menu).
+  scroll-mt-24 = when the browser jumps here, it stops 96px above the section,
+  so the title isn't hidden under the sticky header.
+-->
+<section
+  id="services"
+  class:list={[sectionX, "scroll-mt-24 py-20 md:py-28"]}
+>
+  <!-- Intro -->
+  <div class="max-w-2xl">
+    <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
+      Une prestation pour chaque type de local
+    </h2>
+    <p class="mt-5 text-lg text-pretty text-ink/70">
+      Interventions régulières ou ponctuelles, adaptées à la surface, à la
+      fréquence et aux horaires de votre site.
+    </p>
+  </div>
+
+  <!-- One row per service, image and text alternating left / right -->
+  <ul class="mt-16 flex flex-col gap-20 md:mt-24 md:gap-28">
+    {
+      services.map((service, index) => (
+        <li class="grid items-center gap-8 md:grid-cols-2 md:gap-14 lg:gap-20">
+          <!--
+            Photo placeholder, until the real photos are ready.
+            md:order-2 on every other row (index odd) = image goes to the right.
+          -->
+          <PhotoPlaceholder
+            icon={service.icon}
+            class:list={["aspect-4/3", index % 2 === 1 && "md:order-2"]}
+          />
+
+          <div>
+            <!-- Number: 01, 02… padStart adds the leading zero -->
+            <p class="font-heading text-sm font-semibold tracking-widest text-primary">
+              {String(index + 1).padStart(2, "0")}
+            </p>
+            <h3 class="mt-3 text-3xl leading-tight font-semibold text-balance">
+              {service.title}
+            </h3>
+            <span class="mt-4 block h-0.5 w-10 rounded-full bg-accent" />
+            <p class="mt-5 max-w-lg text-lg text-pretty text-ink/70">
+              {service.description}
+            </p>
+            <!-- group/pill: the arrow class from buttons.ts slides on hover -->
+            <a
+              href={`/services/${service.slug}`}
+              class="group/pill mt-7 inline-flex items-center gap-2 font-heading font-semibold text-primary transition-colors hover:text-ink"
+            >
+              En savoir plus
+              <Icon name="tabler:arrow-right" class={arrow} />
+              <!-- sr-only: tells screen readers WHICH service, since all links say "En savoir plus" -->
+              <span class="sr-only">sur {service.title.toLowerCase()}</span>
+            </a>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+</section>

@@ -1,0 +1,44 @@
+---
+// "Pour qui": the 4 kinds of clients
+import FeatureCard from "./FeatureCard.astro";
+import { sectionX } from "../lib/layout";
+
+const audiences = [
+  {
+    icon: "tabler:briefcase",
+    title: "Entreprises",
+    text: "Vos bureaux, ateliers et entrepôts entretenus sur un rythme régulier, sans perturber vos équipes.",
+  },
+  {
+    icon: "tabler:building-community",
+    title: "Syndics de copropriété",
+    text: "Vos halls, escaliers, ascenseurs et locaux poubelles entretenus selon un planning fixe.",
+  },
+  {
+    icon: "tabler:building-estate",
+    title: "Gestionnaires immobiliers",
+    text: "Un entretien régulier ou une remise en état entre deux locataires, selon vos besoins.",
+  },
+  {
+    icon: "tabler:tools",
+    title: "Professionnels du BTP",
+    text: "Vos chantiers nettoyés en fin de travaux, pour livrer des locaux propres et dans les délais.",
+  },
+];
+---
+
+<section class:list={[sectionX, "py-20 md:py-28"]}>
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
+      Des prestations pensées pour les professionnels
+    </h2>
+    <p class="mt-5 text-lg text-pretty text-ink/70">
+      Entreprises, copropriétés, gestionnaires immobiliers ou professionnels du
+      BTP&nbsp;: nous adaptons nos interventions à votre activité.
+    </p>
+  </div>
+
+  <ul class="mt-14 grid gap-5 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
+    {audiences.map((item) => <FeatureCard {...item} />)}
+  </ul>
+</section>
