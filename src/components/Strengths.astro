@@ -1,0 +1,40 @@
+---
+import FeatureCard from "./FeatureCard.astro";
+import { sectionX } from "../lib/layout";
+
+// The 4 strengths: one card each, built with .map() below
+const strengths = [
+  {
+    icon: "tabler:award",
+    title: "15 ans d’expérience",
+    text: "Locaux professionnels : bureaux, bâtiments et chantiers.",
+  },
+  {
+    icon: "tabler:clock",
+    title: "Horaires adaptés",
+    // ‑ = non-breaking hyphen: "week-end" never splits across two lines
+    text: "Tôt le matin, le soir ou le week‑end, sans gêner votre activité.",
+  },
+  {
+    icon: "tabler:headset",
+    title: "Un interlocuteur unique",
+    text: "Un responsable dédié, qui connaît votre site et répond directement.",
+  },
+  {
+    icon: "tabler:file-euro",
+    title: "Devis gratuit",
+    text: "Établi rapidement, après une visite sur site si nécessaire.",
+  },
+];
+---
+
+<section class:list={[sectionX, "py-20 md:py-28"]}>
+  <!-- sr-only title: invisible, but gives the section a name for Google
+       and screen readers (the page goes h1 -> h2 -> h3) -->
+  <h2 class="sr-only">Pourquoi choisir Axial Nettoyage</h2>
+
+  <!-- 1 column on phone, 2 on tablet, 4 on large screens -->
+  <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    {strengths.map((item) => <FeatureCard {...item} />)}
+  </ul>
+</section>

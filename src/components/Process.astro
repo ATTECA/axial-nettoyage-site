@@ -1,0 +1,74 @@
+---
+// "Comment ça se passe": 4 steps on a vertical line
+import { Icon } from "astro-icon/components";
+import { site } from "../data/site";
+import { glossy, glossyBlue, arrow } from "../lib/buttons";
+import { sectionX } from "../lib/layout";
+
+const steps = [
+  {
+    title: "Vous nous appelez ou vous demandez un devis",
+    text: `Par téléphone au ${site.phone}, ou via le formulaire : indiquez le type de local et la prestation qui vous intéresse.`,
+  },
+  {
+    title: "Nous évaluons votre site",
+    text: "Surface, fréquence, contraintes d’accès et horaires : nous passons sur place si c’est nécessaire.",
+  },
+  {
+    title: "Vous recevez un devis gratuit",
+    text: "Un devis détaillé, adapté à votre surface et à la fréquence dont vous avez besoin.",
+  },
+  {
+    title: "Les interventions commencent",
+    text: "Régulières ou ponctuelles, tôt le matin, le soir ou le week‑end, sans gêner votre activité.",
+  },
+];
+---
+
+<!-- White band: breaks the rhythm of the ice-white page -->
+<section class:list={[sectionX, "bg-white/60 py-20 md:py-28"]}>
+  <div class="grid gap-12 md:grid-cols-2 md:gap-14 lg:gap-20">
+    <!-- Left: title. md:sticky = it stays in view while the steps scroll by -->
+    <div class="md:sticky md:top-32 md:self-start">
+      <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
+        Comment ça se passe
+      </h2>
+      <span class="mt-5 block h-0.5 w-10 rounded-full bg-accent"></span>
+      <p class="mt-6 text-lg text-pretty text-ink/70">
+        Quatre étapes, et rien ne démarre avant votre accord sur le devis.
+      </p>
+      <a
+        href="/devis"
+        class:list={[glossy, glossyBlue, "mt-9 inline-flex px-7 py-3.5"]}
+      >
+        Demander un devis
+        <Icon name="tabler:arrow-right" class={arrow} />
+      </a>
+    </div>
+
+    <!-- Right: the steps. <ol> = an ordered list, the order matters -->
+    <ol class="flex flex-col">
+      {
+        steps.map((step, index) => (
+          <li class="relative flex gap-6 pb-12 last:pb-0">
+            <!-- The line linking the numbers: hidden after the last step -->
+            {index < steps.length - 1 && (
+              <span
+                class="absolute top-12 bottom-0 left-5.5 w-px bg-linear-to-b from-primary/40 to-accent/40"
+                aria-hidden="true"
+              />
+            )}
+            <!-- Number in a glossy blue circle -->
+            <span class="flex size-11 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-secondary to-primary font-heading font-semibold text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]">
+              {index + 1}
+            </span>
+            <div class="pt-1.5">
+              <h3 class="text-xl font-semibold text-balance">{step.title}</h3>
+              <p class="mt-3 text-pretty text-ink/70">{step.text}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

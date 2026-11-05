@@ -18,12 +18,57 @@ export const mapsHref =
   "https://www.google.com/maps/search/?api=1&query=" +
   encodeURIComponent(site.address);
 
+// title + slug: used by the header, the footer and the home page
+// description + icon: used by the services section of the home page
+// (  = non-breaking space before ":" in French)
 export const services = [
-  { title: "Nettoyage et entretien de bureaux", slug: "bureaux" },
-  { title: "Entretien des parties communes", slug: "parties-communes" },
-  { title: "Nettoyage de bâtiments industriels", slug: "batiments-industriels" },
-  { title: "Nettoyage de fin de chantier", slug: "fin-de-chantier" },
-  { title: "Nettoyage de vitres", slug: "vitres" },
-  { title: "Gestion des conteneurs à déchets", slug: "conteneurs-dechets" },
-  { title: "Remise en état après travaux ou déménagement", slug: "remise-en-etat" },
+  {
+    title: "Nettoyage et entretien de bureaux",
+    slug: "bureaux",
+    icon: "tabler:building",
+    description:
+      "Bureaux, open spaces et sanitaires, entretenus avant l’arrivée ou après le départ de vos équipes.",
+  },
+  {
+    title: "Entretien des parties communes",
+    slug: "parties-communes",
+    icon: "tabler:stairs",
+    description:
+      "Halls, escaliers, ascenseurs, couloirs et locaux poubelles, sur un rythme fixe, pour les syndics et gestionnaires.",
+  },
+  {
+    title: "Nettoyage de bâtiments industriels",
+    slug: "batiments-industriels",
+    icon: "tabler:building-factory-2",
+    description:
+      "Ateliers, entrepôts et locaux techniques, avec le matériel adapté aux grandes surfaces.",
+  },
+  {
+    title: "Nettoyage de fin de chantier",
+    slug: "fin-de-chantier",
+    icon: "tabler:helmet",
+    description:
+      "Remise en état après travaux pour livrer un site propre : poussières, traces, sols et vitrages.",
+  },
+  {
+    title: "Nettoyage de vitres",
+    slug: "vitres",
+    icon: "tabler:window",
+    description:
+      "Vitres, surfaces vitrées et menuiseries, en passage régulier ou ponctuel.",
+  },
+  {
+    title: "Gestion des conteneurs à déchets",
+    slug: "conteneurs-dechets",
+    icon: "tabler:trash",
+    description:
+      "Nettoyage des conteneurs et des locaux poubelles, pour les copropriétés et les entreprises.",
+  },
+  {
+    title: "Remise en état après travaux ou déménagement",
+    slug: "remise-en-etat",
+    icon: "tabler:truck-loading",
+    description:
+      "Après une rénovation ou un déménagement, nous remettons le local en état avant sa remise en service.",
+  },
 ];
