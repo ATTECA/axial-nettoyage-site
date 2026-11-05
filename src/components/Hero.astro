@@ -1,0 +1,81 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import heroImage from "../assets/hero.png";
+import LogoAxial from "../assets/logo-axial.svg";
+import { phoneHref } from "../data/site";
+import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
+---
+
+<!--
+  -mt-18 pulls the hero up under the sticky header (which is h-18 = 72px tall),
+  so the photo shows through the header's frosted glass.
+  h-svh = exactly one screen tall, counted from the very top (under the header):
+  so the visible photo = screen height minus the header, and the next section
+  starts right at the bottom of the screen. min-h-[40rem] = safety net for very
+  short screens (phone in landscape), so the text never overflows.
+-->
+<section class="relative isolate -mt-18 flex h-svh min-h-[40rem] items-end overflow-hidden md:items-center">
+  <!--
+    <Image> = Astro optimises the photo at build time: converts it to WebP and
+    creates several sizes (widths) so a phone doesn't download the 1600px version.
+    loading="eager" + fetchpriority="high": it's the first thing on screen, load it right away.
+  -->
+  <Image
+    src={heroImage}
+    alt="Agent d'entretien Axial Nettoyage nettoyant le sol d'un bureau lumineux"
+    widths={[640, 1024, 1600]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+    class="absolute inset-0 -z-20 size-full object-cover object-[70%_center]"
+  />
+
+  <!-- Dark overlay so the white text stays readable:
+       on mobile it darkens from the bottom (where the text is),
+       on desktop from the left (where the text is) -->
+  <div
+    class="absolute inset-0 -z-10 bg-linear-to-t from-ink/90 via-ink/55 to-ink/10 md:bg-linear-to-r md:from-ink/85 md:via-ink/45 md:to-transparent"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="w-full px-6 pt-40 pb-14 md:px-14 md:pt-48 md:pb-28 lg:px-32 3xl:px-[11vw]">
+    <div class="max-w-3xl text-white">
+      <h1 class="text-4xl leading-[1.1] font-semibold text-balance sm:text-5xl lg:text-6xl">
+        <!-- "AXIAL" = the logo drawing (squeegee + sparkles), sized in em
+             so it follows the text size on every screen.
+             The letters are currentColor (= white here), the squeegee stays lime.
+             sr-only "Axial" = what Google and screen readers read instead of the drawing.
+             &nbsp; = non-breaking space: in French, the colon never starts a line.
+             {" "} = explicit space, Astro drops the line break before the <span> -->
+        <span class="sr-only">Axial</span><LogoAxial
+          class="inline-block h-[1.11em] w-auto align-[-0.17em]"
+          aria-hidden="true"
+        />{" "}Nettoyage&nbsp;: votre partenaire{" "}
+        <span class="md:whitespace-nowrap"><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">propreté</span> à Montpellier</span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg text-pretty text-white/85">
+        Nettoyage sur mesure de bureaux, immeubles et chantiers, depuis 15 ans.
+      </p>
+
+      <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+        <a
+          href="/devis"
+          class:list={[glossy, glossyLime, "flex justify-center px-7 py-3.5"]}
+        >
+          Devis gratuit
+          <Icon name="tabler:arrow-right" class={arrow} />
+        </a>
+        <a
+          href={phoneHref}
+          class:list={[glossy, glossyGlass, "flex justify-center px-7 py-3.5"]}
+        >
+          <Icon name="tabler:phone" class="size-4" />
+          Appeler
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

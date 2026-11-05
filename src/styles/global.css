@@ -9,6 +9,9 @@
   --color-ink: #16324f;
   --font-sans: "Inter Variable", sans-serif;
   --font-heading: "Sora Variable", sans-serif;
+
+  /* Extra screen size for large monitors (Tailwind stops at 2xl = 1536px) */
+  --breakpoint-3xl: 106rem; /* 1696px */
 }
 
 @layer base {

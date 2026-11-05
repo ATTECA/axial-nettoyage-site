@@ -1,7 +1,9 @@
 ---
 import { Icon } from "astro-icon/components";
 import Logo from "../assets/logo.svg";
+import LogoTypo from "../assets/logo-typo.svg";
 import { site, services, phoneHref } from "../data/site";
+import { glossy, glossyBlue, glossyLime, glossyWhite, arrow } from "../lib/buttons";
 
 // Squeegee wipe: a lime bar under the link that sweeps in from the left
 // on hover, and leaves to the right when the mouse goes away.
@@ -12,38 +14,27 @@ const navLink =
 const serviceLink =
   "relative block overflow-hidden rounded-lg px-3 py-2 hover:text-primary before:absolute before:inset-0 before:-z-10 before:origin-right before:scale-x-0 before:bg-background before:transition-transform before:duration-300 before:ease-out hover:before:origin-left hover:before:scale-x-100 focus-visible:before:origin-left focus-visible:before:scale-x-100 motion-reduce:before:transition-none";
 
-// Glossy pill, shared by every button:
-// - before: = light reflection on the top half
-// - after: = a band of light that crosses the pill once on hover
-//   (transition only on hover, so it jumps back invisibly when the mouse leaves)
-// - lifts 2px on hover, presses back down on click
-const glossy =
-  "group/pill relative isolate items-center gap-2 overflow-hidden rounded-full font-heading font-semibold whitespace-nowrap transition duration-200 before:absolute before:inset-x-0 before:top-0 before:-z-10 before:h-1/2 before:bg-linear-to-b before:from-white/40 before:to-white/5 after:absolute after:inset-y-0 after:left-0 after:w-1/3 after:-translate-x-full after:skew-x-[-20deg] after:bg-linear-to-r after:from-transparent after:via-white/50 after:to-transparent hover:-translate-y-0.5 hover:after:translate-x-[400%] hover:after:transition-transform hover:after:duration-700 hover:after:ease-out active:translate-y-0 motion-reduce:transition-none motion-reduce:after:hidden";
-
-// Colours: gradient + a shadow tinted with the button's own colour
-const glossyBlue =
-  "bg-linear-to-b from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_6px_16px_-4px_rgb(49_123_185/0.6)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_10px_24px_-6px_rgb(49_123_185/0.75)] active:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_3px_8px_-2px_rgb(49_123_185/0.6)]";
-
-// Lime keeps dark (ink) text: white on lime is unreadable (contrast 1.8:1)
-const glossyLime =
-  "bg-linear-to-b from-[#c6e47a] to-accent text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-2px_0_rgb(110_150_30/0.35),0_6px_16px_-4px_rgb(22_50_79/0.45)] hover:shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-2px_0_rgb(110_150_30/0.35),0_10px_24px_-6px_rgb(22_50_79/0.55)] active:shadow-[inset_0_1px_0_rgb(255_255_255/0.6),inset_0_-1px_0_rgb(110_150_30/0.35),0_3px_8px_-2px_rgb(22_50_79/0.45)]";
-
-const glossyWhite =
-  "bg-linear-to-b from-white to-[#dfeaf3] text-primary shadow-[inset_0_-2px_0_rgb(49_123_185/0.15),0_6px_16px_-4px_rgb(22_50_79/0.45)]";
-
-// Arrow that nudges right on hover
-const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
 ---
 
 <!-- Full width, frosted glass: translucent background + blur of what's behind -->
 <header
   id="header-bar"
-  class="group/bar sticky top-0 z-50 bg-white/65 bg-linear-to-r from-primary/20 via-white/0 to-accent/30 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,transparent,rgb(49_123_185/0.35)_25%,rgb(168_207_69/0.7)_75%,transparent)] backdrop-blur-2xl backdrop-saturate-150 transition-shadow duration-300 data-scrolled:shadow-lg data-scrolled:shadow-ink/5"
+  class="group/bar sticky top-0 z-50 bg-background/95 bg-linear-to-r from-primary/20 via-white/0 to-accent/30 after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-[linear-gradient(90deg,transparent,rgb(49_123_185/0.35)_25%,rgb(168_207_69/0.7)_75%,transparent)] backdrop-blur-2xl backdrop-saturate-150 transition-shadow duration-300 data-scrolled:shadow-lg data-scrolled:shadow-ink/5"
 >
   <div class="flex h-18 items-center justify-between px-5 transition-all duration-300 group-data-scrolled/bar:h-14 md:grid md:grid-cols-[1fr_auto_1fr] md:px-8 lg:px-20">
-    <!-- Logo -->
-    <a href="/" aria-label="Axial Nettoyage, accueil">
-      <Logo class="h-11 w-auto transition-all duration-300 group-data-scrolled/bar:h-9" />
+    <!-- Logo, on a soft white shape so it reads on the blue tint.
+         before: = an extra layer behind the logo: rounded on the left (rounded-l-full),
+         white then fading to the right (bg-linear-to-r), edges softened (blur).
+         isolate + -z-10 = drawn behind the logo only. -->
+    <a
+      href="/"
+      aria-label="Axial Nettoyage, accueil"
+      class="relative isolate justify-self-start before:absolute before:-inset-y-1 before:-right-28 before:-left-6 before:-z-10 before:rounded-l-full before:bg-[linear-gradient(to_right,rgb(255_255_255/0.5),white_20%,white_40%,transparent)] before:blur-[1px]"
+    >
+      <!-- Typographic logo (text only, no squeegee).
+           Its SVG has empty space above "AXIAL" so that AXIAL, not the whole logo,
+           is centred vertically: hence h-13 to keep the letters the same size -->
+      <LogoTypo class="h-13 w-auto transition-all duration-300 group-data-scrolled/bar:h-10" />
     </a>
 
     <!-- Desktop navigation -->
