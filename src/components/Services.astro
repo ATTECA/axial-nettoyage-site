@@ -6,7 +6,7 @@ import PhotoPlaceholder from "./PhotoPlaceholder.astro";
 import WaveRibbon from "./WaveRibbon.astro";
 import { services } from "../data/site";
 import { arrow } from "../lib/buttons";
-import { sectionX } from "../lib/layout";
+import { sectionX, streak } from "../lib/layout";
 
 // All the photos in src/assets/services/, loaded at once.
 // Each file is named after a service's slug (bureaux.jpg, vitres.jpg…),
@@ -76,8 +76,8 @@ const photoFor = (slug: string) =>
             <h3 class="text-3xl leading-tight font-semibold text-balance">
               {service.title}
             </h3>
-            <!-- Squeegee streak: slanted (-skew-x-12), lime fading out to the right -->
-            <span class="mt-4 block h-1 w-28 -skew-x-12 rounded-full bg-linear-to-r from-accent via-accent/60 to-transparent" />
+            <!-- Squeegee streak (style in layout.ts) -->
+            <span class:list={[streak, "mt-4 w-28"]} />
             <p class="mt-5 max-w-lg text-lg text-pretty text-ink/70">
               {service.description}
             </p>

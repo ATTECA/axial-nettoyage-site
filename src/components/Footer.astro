@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 import Logo from "../assets/logo.svg";
 import { site, services, phoneHref, emailHref, mapsHref } from "../data/site";
+import { streak } from "../lib/layout";
 
 // Computed at build time: the year updates each time the site is rebuilt
 const year = new Date().getFullYear();
@@ -112,8 +113,8 @@ const contacts = [
             <p class="font-heading text-sm font-semibold tracking-wide text-white uppercase">
               {column.title}
             </p>
-            <!-- Small lime bar under each title, echo of the squeegee -->
-            <span class="mt-2 block h-0.5 w-8 rounded-full bg-accent" />
+            <!-- Squeegee streak under each title (style in layout.ts), shorter here -->
+            <span class:list={[streak, "mt-2 w-16"]} />
             <ul class="mt-5 flex flex-col gap-3 text-sm">
               {column.links.map((link) => (
                 <li>
