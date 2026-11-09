@@ -7,7 +7,7 @@ import { Icon } from "astro-icon/components";
 import { site, phoneHref } from "../data/site";
 import { glossy, glossyLime, glossyWhite, arrow } from "../lib/buttons";
 import { sectionX } from "../lib/layout";
-import SoapGlass from "./SoapGlass.astro";
+import Sparkles from "./Sparkles.astro";
 import { Image } from "astro:assets";
 import soapPhoto from "../assets/vitre-savon-texte.jpg";
 
@@ -17,20 +17,11 @@ interface Props {
   text: string;
   // true = also show the phone button next to "Demander un devis"
   phone?: boolean;
-  // Changes the soap swirls, so the two cards on the page differ
-  seed?: number;
-  // true = on desktop, the soapy window photo replaces the drawn soap
+  // true = the soapy window photo replaces the sparkles
   photo?: boolean;
 }
 
-const {
-  eyebrow,
-  title,
-  text,
-  phone = false,
-  seed = 1,
-  photo = false,
-} = Astro.props;
+const { eyebrow, title, text, phone = false, photo = false } = Astro.props;
 ---
 
 <section class:list={[sectionX, "py-10 md:py-14"]}>
@@ -43,7 +34,7 @@ const {
       // Without the photo: normal padding around the text.
       photo
         ? "mx-auto aspect-2624/1632 max-w-2xl"
-        : "px-6 py-16 md:px-12 md:py-20",
+        : "mx-auto max-w-5xl px-6 py-16 md:px-12 md:py-20",
     ]}
   >
     <!-- Soft light spots in the corners: lime glow top right, light blue bottom left -->
@@ -61,15 +52,20 @@ const {
       aria-hidden="true"
     ></div>
 
-    <!-- The soap on the window. The mask hides it in an oval in the middle:
-         that's the patch the squeegee already wiped, where the text sits.
-         transparent = soap hidden, black = soap visible -->
-    {!photo && (
-      <SoapGlass
-        seed={seed}
-        class="-z-10 opacity-90 mask-[radial-gradient(ellipse_44%_62%_at_50%_50%,transparent_94%,black_98%)]"
-      />
-    )}
+    <!-- Second lime glow, bottom right, to balance the one top right -->
+    <div
+      class="absolute right-[18%] -bottom-20 -z-10 size-56 rounded-full bg-accent/20 blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Third lime glow, bottom left, to fill that empty corner -->
+    <div
+      class="absolute bottom-[-4rem] left-[6%] -z-10 size-60 rounded-full bg-accent/25 blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Without the photo: the logo's stars twinkling around the edges -->
+    {!photo && <Sparkles />}
 
     <!-- The photo of a squeegee wiping a soapy window,
          with the title already written on the clean glass.
