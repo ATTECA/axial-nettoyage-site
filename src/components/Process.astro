@@ -7,9 +7,15 @@ import { sectionX } from "../lib/layout";
 import { Image } from "astro:assets";
 import wetGlass from "../assets/vitre-mouillee.jpg";
 
-// Frosted white card: the wet glass shows through, blurred, around the text
+// Glass pane over the wet glass photo:
+// - bg-white/45 + backdrop-blur-2xl: see-through, but blurred enough for text
+// - backdrop-saturate-150: the colours behind get richer, like thick glass
+// - gradient bg: a little brighter at the top left, where the light hits
+// - inset shadows: a bright edge on top, a faint one at the bottom
+//   (light catching the edges of the pane)
+// - before: = a diagonal reflection band across the pane
 const frosted =
-  "rounded-4xl border border-white/60 bg-white/75 p-8 shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)] backdrop-blur-xl md:p-10";
+  "relative isolate overflow-hidden rounded-4xl border border-white/50 bg-linear-to-br from-white/60 via-white/40 to-white/30 p-8 shadow-[inset_0_1px_0_rgb(255_255_255/0.9),inset_0_-1px_0_rgb(255_255_255/0.35),0_24px_60px_-24px_rgb(22_50_79/0.5)] backdrop-blur-2xl backdrop-saturate-150 md:p-10 before:pointer-events-none before:absolute before:-top-1/2 before:-left-1/4 before:-z-10 before:h-[200%] before:w-1/3 before:rotate-[25deg] before:bg-linear-to-r before:from-transparent before:via-white/35 before:to-transparent";
 
 const steps = [
   {
@@ -32,7 +38,9 @@ const steps = [
 ---
 
 <!-- Band with the wet glass photo: breaks the rhythm of the ice-white page -->
-<section class:list={[sectionX, "relative isolate overflow-hidden py-20 md:py-28"]}>
+<section class:list={[sectionX, "relative isolate overflow-clip py-20 md:py-28"]}>
+  <!-- overflow-clip, not overflow-hidden: both crop the photo, but
+       overflow-hidden would stop the sticky title card from following the page -->
   <!-- The photo covers the whole band. alt="" = decorative.
        widths + sizes: Astro makes several versions and the browser downloads
        the one that fits the screen (the original is 2752 px wide). -->
@@ -51,7 +59,7 @@ const steps = [
         Comment ça se passe
       </h2>
       <span class="mt-5 block h-0.5 w-10 rounded-full bg-accent"></span>
-      <p class="mt-6 text-lg text-pretty text-ink/70">
+      <p class="mt-6 text-lg text-pretty text-ink/80">
         Quatre étapes, et rien ne démarre avant votre accord sur le devis.
       </p>
       <a
@@ -81,7 +89,7 @@ const steps = [
             </span>
             <div class="pt-1.5">
               <h3 class="text-xl font-semibold text-balance">{step.title}</h3>
-              <p class="mt-3 text-pretty text-ink/70">{step.text}</p>
+              <p class="mt-3 text-pretty text-ink/80">{step.text}</p>
             </div>
           </li>
         ))
