@@ -4,6 +4,12 @@ import { Icon } from "astro-icon/components";
 import { site } from "../data/site";
 import { glossy, glossyBlue, arrow } from "../lib/buttons";
 import { sectionX } from "../lib/layout";
+import { Image } from "astro:assets";
+import wetGlass from "../assets/vitre-mouillee.jpg";
+
+// Frosted white card: the wet glass shows through, blurred, around the text
+const frosted =
+  "rounded-4xl border border-white/60 bg-white/75 p-8 shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)] backdrop-blur-xl md:p-10";
 
 const steps = [
   {
@@ -25,11 +31,22 @@ const steps = [
 ];
 ---
 
-<!-- White band: breaks the rhythm of the ice-white page -->
-<section class:list={[sectionX, "bg-white/60 py-20 md:py-28"]}>
-  <div class="grid gap-12 md:grid-cols-2 md:gap-14 lg:gap-20">
+<!-- Band with the wet glass photo: breaks the rhythm of the ice-white page -->
+<section class:list={[sectionX, "relative isolate overflow-hidden py-20 md:py-28"]}>
+  <!-- The photo covers the whole band. alt="" = decorative.
+       widths + sizes: Astro makes several versions and the browser downloads
+       the one that fits the screen (the original is 2752 px wide). -->
+  <Image
+    src={wetGlass}
+    alt=""
+    widths={[960, 1600, 2400]}
+    sizes="100vw"
+    class="absolute inset-0 -z-10 size-full object-cover"
+  />
+
+  <div class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-10">
     <!-- Left: title. md:sticky = it stays in view while the steps scroll by -->
-    <div class="md:sticky md:top-32 md:self-start">
+    <div class:list={[frosted, "md:sticky md:top-32 md:self-start"]}>
       <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
         Comment ça se passe
       </h2>
@@ -47,7 +64,7 @@ const steps = [
     </div>
 
     <!-- Right: the steps. <ol> = an ordered list, the order matters -->
-    <ol class="flex flex-col">
+    <ol class:list={[frosted, "flex flex-col"]}>
       {
         steps.map((step, index) => (
           <li class="relative flex gap-6 pb-12 last:pb-0">
