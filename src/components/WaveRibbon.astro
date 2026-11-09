@@ -1,0 +1,112 @@
+---
+// A twisted "wave ribbon" behind the services, made like designers make
+// them in Illustrator (the "blend" tool): two different curves, edge A and
+// edge B, and 40 thin lines spread from one to the other.
+// Where A and B cross, the ribbon pinches and twists; where they move
+// apart, it opens into a wide sheet.
+// Colour goes line by line: brand blue on edge A -> lime on edge B,
+// so both colours show all along the ribbon.
+//
+// It starts under the "Pourquoi choisir Axial" glass bar (the svg goes up
+// past the top of the section) and leaves the screen on the left at the end.
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Drawing area: x 0 -> 1000 = left -> right edge of the screen,
+// y 0 -> 1000 = top -> bottom of the drawing. Stretched to the section's
+// size (preserveAspectRatio="none"), the lines stay 1px (non-scaling-stroke).
+const W = 1000;
+const H = 1000;
+
+type Point = [number, number];
+
+// The two edges of the ribbon: points the curve passes through, top to bottom.
+// Move these points to reshape the ribbon (x outside 0-1000 = off screen).
+const edgeA: Point[] = [
+  [560, 0], [700, 60], [640, 140], [260, 230], [90, 330], [330, 430],
+  [860, 520], [960, 610], [620, 700], [200, 790], [260, 880], [-200, 975],
+];
+const edgeB: Point[] = [
+  [470, 0], [820, 90], [420, 170], [180, 260], [260, 360], [560, 420],
+  [700, 540], [860, 650], [430, 720], [120, 830], [430, 900], [-200, 1000],
+];
+
+// Catmull-Rom: a smooth curve that passes exactly through every point.
+// Returns a function giving the curve's position at t (0 = start, 1 = end).
+function smoothCurve(pts: Point[]) {
+  const n = pts.length - 1;
+  return (t: number): Point => {
+    const seg = Math.min(Math.floor(t * n), n - 1);
+    const f = t * n - seg;
+    const p0 = pts[Math.max(seg - 1, 0)];
+    const p1 = pts[seg];
+    const p2 = pts[seg + 1];
+    const p3 = pts[Math.min(seg + 2, n)];
+    const at = (k: 0 | 1) =>
+      0.5 *
+      (2 * p1[k] +
+        (-p0[k] + p2[k]) * f +
+        (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * f * f +
+        (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * f * f * f);
+    return [at(0), at(1)];
+  };
+}
+
+// Mixes two colours: w = 0 -> first colour, w = 1 -> second colour
+const blue: [number, number, number] = [49, 123, 185]; // #317bb9 (primary)
+const lime: [number, number, number] = [168, 207, 69]; // #a8cf45 (accent)
+const mix = (w: number) =>
+  `rgb(${blue.map((c, k) => Math.round(c + (lime[k] - c) * w)).join(" ")})`;
+
+const a = smoothCurve(edgeA);
+const b = smoothCurve(edgeB);
+const lines = 40;
+const steps = 500; // points per line: more = smoother
+
+const strands: { d: string; colour: string; opacity: number }[] = [];
+for (let i = 0; i < lines; i++) {
+  const k = i / (lines - 1); // 0 = edge A, 1 = edge B
+  // Position between the edges. The power makes the lines bunch up a
+  // little near edge A, which gives the sheet a 3D, curved feel
+  const w = k ** 1.35;
+  const pts: string[] = [];
+  for (let s = 0; s <= steps; s++) {
+    const [ax, ay] = a(s / steps);
+    const [bx, by] = b(s / steps);
+    pts.push(`${(ax + (bx - ax) * w).toFixed(1)} ${(ay + (by - ay) * w).toFixed(1)}`);
+  }
+  strands.push({
+    d: `M${pts.join("L")}`,
+    colour: mix(k),
+    // The two edges a bit stronger; lime lines slightly stronger than blue
+    // ones, because lime is lighter and would look fainter otherwise
+    opacity: i === 0 || i === lines - 1 ? 0.65 : 0.25 + 0.15 * k,
+  });
+}
+---
+
+<!-- -top-56: the drawing starts 14rem above the section, under the glass bar -->
+<svg
+  class:list={["pointer-events-none absolute inset-x-0 -top-56 bottom-0 -z-10 h-[calc(100%+14rem)] w-full", className]}
+  viewBox={`0 0 ${W} ${H}`}
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <g fill="none" stroke-linecap="round">
+    {
+      strands.map((s) => (
+        <path
+          d={s.d}
+          stroke={s.colour}
+          stroke-width="1"
+          stroke-opacity={s.opacity}
+          vector-effect="non-scaling-stroke"
+        />
+      ))
+    }
+  </g>
+</svg>

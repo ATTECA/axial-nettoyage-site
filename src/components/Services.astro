@@ -1,9 +1,22 @@
 ---
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import WaveRibbon from "./WaveRibbon.astro";
 import { services } from "../data/site";
 import { arrow } from "../lib/buttons";
 import { sectionX } from "../lib/layout";
+
+// All the photos in src/assets/services/, loaded at once.
+// Each file is named after a service's slug (bureaux.jpg, vitres.jpg…),
+// so photoFor("vitres") finds vitres.jpg. No photo = placeholder.
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/services/*.jpg",
+  { eager: true },
+);
+const photoFor = (slug: string) =>
+  photos[`../assets/services/${slug}.jpg`]?.default;
 ---
 
 <!--
@@ -13,8 +26,11 @@ import { sectionX } from "../lib/layout";
 -->
 <section
   id="services"
-  class:list={[sectionX, "scroll-mt-24 py-20 md:py-28"]}
+  class:list={[sectionX, "relative isolate scroll-mt-24 py-20 md:py-28"]}
 >
+  <!-- The ribbon snaking behind the rows, left -> right -> left like them -->
+  <WaveRibbon />
+
   <!-- Intro -->
   <div class="max-w-2xl">
     <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
@@ -32,13 +48,29 @@ import { sectionX } from "../lib/layout";
       services.map((service, index) => (
         <li class="grid items-center gap-8 md:grid-cols-2 md:gap-14 lg:gap-20">
           <!--
-            Photo placeholder, until the real photos are ready.
+            Photo (or placeholder if there's none yet).
             md:order-2 on every other row (index odd) = image goes to the right.
+            alt="" = decorative: the title next to it already says what it is.
+            widths + sizes: the photo is about half the screen wide from md up,
+            full width below, so the browser picks the right version.
           -->
-          <PhotoPlaceholder
-            icon={service.icon}
-            class:list={["aspect-4/3", index % 2 === 1 && "md:order-2"]}
-          />
+          {photoFor(service.slug) ? (
+            <Image
+              src={photoFor(service.slug)!}
+              alt=""
+              widths={[480, 800, 1200]}
+              sizes="(min-width: 768px) 45vw, 100vw"
+              class:list={[
+                "aspect-4/3 w-full rounded-3xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]",
+                index % 2 === 1 && "md:order-2",
+              ]}
+            />
+          ) : (
+            <PhotoPlaceholder
+              icon={service.icon}
+              class:list={["aspect-4/3", index % 2 === 1 && "md:order-2"]}
+            />
+          )}
 
           <div>
             <!-- Number: 01, 02… padStart adds the leading zero -->

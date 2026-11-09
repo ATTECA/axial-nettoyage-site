@@ -1,7 +1,9 @@
 ---
 // "Qui sommes-nous": text on the left, team photo on the right
 import { Icon } from "astro-icon/components";
-import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import { Image } from "astro:assets";
+// Temporary stock photo: replace with a real photo of the Axial team
+import teamPhoto from "../assets/equipe.jpg";
 import { glossy, glossyBlue, arrow } from "../lib/buttons";
 import { sectionX, eyebrow } from "../lib/layout";
 ---
@@ -32,7 +34,14 @@ import { sectionX, eyebrow } from "../lib/layout";
       </a>
     </div>
 
-    <!-- Team photo, to come -->
-    <PhotoPlaceholder icon="tabler:users-group" class="aspect-square" />
+    <!-- Team photo. alt="" for now: it's a stock photo, not the real team.
+         With the real photo, describe it (e.g. "L'équipe Axial Nettoyage…") -->
+    <Image
+      src={teamPhoto}
+      alt=""
+      widths={[480, 800, 1200]}
+      sizes="(min-width: 768px) 45vw, 100vw"
+      class="aspect-square w-full rounded-3xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]"
+    />
   </div>
 </section>
