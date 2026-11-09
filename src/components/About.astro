@@ -1,0 +1,38 @@
+---
+// "Qui sommes-nous": text on the left, team photo on the right
+import { Icon } from "astro-icon/components";
+import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import { glossy, glossyBlue, arrow } from "../lib/buttons";
+import { sectionX, eyebrow } from "../lib/layout";
+---
+
+<section class:list={[sectionX, "py-20 md:py-28"]}>
+  <div class="grid items-center gap-10 md:grid-cols-2 md:gap-14 lg:gap-20">
+    <div>
+      <p class={eyebrow}>Qui sommes-nous</p>
+      <h2 class="mt-3 text-4xl leading-tight font-semibold text-balance md:text-5xl">
+        15 ans d’expérience au service de vos locaux
+      </h2>
+      <span class="mt-5 block h-0.5 w-10 rounded-full bg-accent"></span>
+      <p class="mt-6 text-lg text-pretty text-ink/70">
+        Axial Nettoyage accompagne les entreprises, les syndics de copropriété
+        et les gestionnaires immobiliers dans tout l’Hérault, avec des
+        interventions rigoureuses et régulières.
+      </p>
+      <p class="mt-4 text-lg text-pretty text-ink/70">
+        Une équipe assurée pour intervenir dans vos locaux, et un responsable
+        dédié qui reste votre interlocuteur du devis à l’intervention.
+      </p>
+      <a
+        href="/contact"
+        class:list={[glossy, glossyBlue, "mt-9 inline-flex px-7 py-3.5"]}
+      >
+        Nous contacter
+        <Icon name="tabler:arrow-right" class={arrow} />
+      </a>
+    </div>
+
+    <!-- Team photo, to come -->
+    <PhotoPlaceholder icon="tabler:users-group" class="aspect-square" />
+  </div>
+</section>

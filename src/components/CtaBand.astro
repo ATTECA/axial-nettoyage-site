@@ -1,0 +1,157 @@
+---
+// Call-to-action card in brand blue, used twice on the home page
+// (after the services, and at the very end).
+// It's a rounded card inside the page, not a full-width band,
+// so the last one doesn't merge into the blue footer below it.
+import { Icon } from "astro-icon/components";
+import { site, phoneHref } from "../data/site";
+import { glossy, glossyLime, glossyWhite, arrow } from "../lib/buttons";
+import { sectionX } from "../lib/layout";
+import SoapGlass from "./SoapGlass.astro";
+import { Image } from "astro:assets";
+import soapPhoto from "../assets/vitre-savon-texte.jpg";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  text: string;
+  // true = also show the phone button next to "Demander un devis"
+  phone?: boolean;
+  // Changes the soap swirls, so the two cards on the page differ
+  seed?: number;
+  // true = on desktop, the soapy window photo replaces the drawn soap
+  photo?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  text,
+  phone = false,
+  seed = 1,
+  photo = false,
+} = Astro.props;
+---
+
+<section class:list={[sectionX, "py-10 md:py-14"]}>
+  <div
+    class:list={[
+      "relative isolate overflow-hidden rounded-4xl bg-linear-to-br from-primary to-[#25629a] px-6 py-16 text-center text-white shadow-[0_24px_60px_-24px_rgb(22_50_79/0.6)] md:px-12 md:py-20",
+      // With the photo: the card takes the photo's exact shape
+      // (2624 × 1632 px, so no stretching, no cropping).
+      // No padding: the button below is placed on top of the photo instead.
+      // From lg only: below that, the photo's text would be too small to read.
+      photo && "lg:mx-auto lg:aspect-2624/1632 lg:max-w-2xl lg:p-0",
+    ]}
+  >
+    <!-- Soft light spots in the corners: lime glow top right, light blue bottom left -->
+    <div
+      class="absolute -top-24 -right-24 -z-10 size-72 rounded-full bg-accent/25 blur-3xl"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="absolute -bottom-24 -left-24 -z-10 size-72 rounded-full bg-secondary/40 blur-3xl"
+      aria-hidden="true"
+    ></div>
+    <!-- Sun glare through the clean glass, top left -->
+    <div
+      class="absolute top-6 left-[22%] -z-10 size-40 rounded-full bg-white/30 blur-3xl"
+      aria-hidden="true"
+    ></div>
+
+    <!-- The soap on the window. The mask hides it in an oval in the middle:
+         that's the patch the squeegee already wiped, where the text sits.
+         transparent = soap hidden, black = soap visible -->
+    <SoapGlass
+      seed={seed}
+      class:list={[
+        "-z-10 opacity-90 mask-[radial-gradient(ellipse_44%_62%_at_50%_50%,transparent_94%,black_98%)]",
+        photo && "lg:hidden",
+      ]}
+    />
+
+    <!-- Desktop only: the photo of a squeegee wiping a soapy window,
+         with the title already written on the clean glass.
+         alt="" because the real title is in the <h2> below (hidden visually
+         on desktop, but still read by Google and screen readers). -->
+    {photo && (
+      <Image
+        src={soapPhoto}
+        alt=""
+        class="absolute inset-0 -z-10 hidden size-full object-cover lg:block"
+      />
+    )}
+
+    <!-- With the photo (lg+): a small box on the bit of clean glass left
+         under "coup de propre", where the button goes. Percentages here are
+         of the card itself. Tweak top/left to move the button. -->
+    <div
+      class:list={[
+        photo &&
+          "lg:absolute lg:top-[69%] lg:left-[41%] lg:flex lg:h-[14%] lg:w-[29%] lg:items-center lg:justify-center",
+      ]}
+    >
+      {eyebrow && (
+        <p class="font-heading text-sm font-semibold tracking-widest text-accent uppercase">
+          {eyebrow}
+        </p>
+      )}
+      <h2
+        class:list={[
+          "mx-auto mt-3 max-w-2xl text-3xl leading-tight font-semibold text-balance",
+          "md:text-5xl",
+          // sr-only = invisible but still there: the photo shows the title
+          photo && "lg:sr-only",
+        ]}
+      >
+        {title}
+      </h2>
+      <p
+        class:list={[
+          "mx-auto mt-5 max-w-xl text-lg text-pretty text-white/80",
+          photo && "lg:sr-only",
+        ]}
+      >
+        {text}
+      </p>
+
+      <div
+        class:list={[
+          "mt-9 flex flex-col justify-center gap-3 sm:flex-row",
+          photo && "lg:mt-0",
+        ]}
+      >
+        <!-- With the photo, the button looks like a sticker slapped a bit
+             crooked on the clean glass (-rotate-3), with a sparkle icon.
+             On hover it straightens up and grows a little. -->
+        <a
+          href="/devis"
+          class:list={[
+            glossy,
+            glossyLime,
+            "flex justify-center px-7 py-3.5",
+            photo &&
+              "lg:-rotate-3 lg:px-5 lg:py-2.5 lg:text-sm lg:ring-4 lg:ring-white/70 lg:transition-transform lg:duration-300 lg:hover:scale-110 lg:hover:rotate-0",
+          ]}
+        >
+          {photo && <Icon name="tabler:sparkles" class="hidden size-4 lg:block" />}
+          {photo ? "Devis gratuit" : "Demander un devis"}
+          <Icon name="tabler:arrow-right" class={arrow} />
+        </a>
+        {phone && (
+          <a
+            href={phoneHref}
+            class:list={[
+              glossy,
+              glossyWhite,
+              "flex justify-center px-7 py-3.5",
+            ]}
+          >
+            <Icon name="tabler:phone" class="size-4" />
+            {site.phone}
+          </a>
+        )}
+      </div>
+    </div>
+  </div>
+</section>

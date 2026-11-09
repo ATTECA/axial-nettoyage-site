@@ -1,0 +1,54 @@
+---
+// "Du matériel professionnel": 4 machines, photo + name + use
+import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import { sectionX } from "../lib/layout";
+
+const machines = [
+  {
+    icon: "tabler:wash",
+    title: "Autolaveuses",
+    text: "Pour laver et sécher en un passage les grandes surfaces : halls, couloirs, ateliers.",
+  },
+  {
+    icon: "tabler:disc",
+    title: "Monobrosses",
+    text: "Pour décrasser et remettre en état les sols durs.",
+  },
+  {
+    icon: "tabler:vacuum-cleaner",
+    title: "Aspirateurs industriels",
+    text: "Pour les grands volumes et les poussières fines de fin de chantier.",
+  },
+  {
+    icon: "tabler:spray",
+    title: "Nettoyeurs haute pression",
+    text: "Pour les sols extérieurs, les quais de chargement et les locaux poubelles.",
+  },
+];
+---
+
+<section class:list={[sectionX, "py-20 md:py-28"]}>
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
+      Du matériel professionnel, adapté à chaque type de local
+    </h2>
+    <p class="mt-5 text-lg text-pretty text-ink/70">
+      Chaque surface demande le bon outil. Nous choisissons le matériel selon
+      votre revêtement, la taille de vos locaux et la fréquence d’entretien,
+      pour un résultat impeccable et des interventions plus rapides.
+    </p>
+  </div>
+
+  <!-- 2 x 2 grid from tablet up -->
+  <ul class="mt-14 grid gap-x-10 gap-y-14 md:mt-16 md:grid-cols-2">
+    {
+      machines.map((machine) => (
+        <li class="text-center">
+          <PhotoPlaceholder icon={machine.icon} class="aspect-3/2" />
+          <h3 class="mt-7 text-2xl font-semibold">{machine.title}</h3>
+          <p class="mx-auto mt-3 max-w-md text-pretty text-ink/70">{machine.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</section>

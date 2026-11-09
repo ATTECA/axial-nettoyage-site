@@ -1,6 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Hero from "../components/Hero.astro";
+import Strengths from "../components/Strengths.astro";
+import Services from "../components/Services.astro";
+import CtaBand from "../components/CtaBand.astro";
+import Audience from "../components/Audience.astro";
+import About from "../components/About.astro";
+import Equipment from "../components/Equipment.astro";
+import Process from "../components/Process.astro";
+import Zone from "../components/Zone.astro";
 ---
 
 <BaseLayout
@@ -8,4 +16,25 @@ import Hero from "../components/Hero.astro";
   description="Nettoyage sur mesure de bureaux, immeubles et chantiers à Montpellier et dans l’Hérault, depuis 15 ans. Devis gratuit."
 >
   <Hero />
+  <Strengths />
+  <Services />
+  <!-- {"…"} instead of "…" so   (non-breaking space before ? and :) works:
+       inside props, &nbsp; would show up as literal text -->
+  <CtaBand
+    photo
+    title={"Besoin d’un vrai coup de propre\u00a0?"}
+    text={"Surface, fréquence, accès\u00a0: on vous répond vite."}
+  />
+  <Audience />
+  <About />
+  <Equipment />
+  <Process />
+  <Zone />
+  <CtaBand
+    eyebrow="Devis gratuit et sans engagement"
+    title="Parlons de vos locaux"
+    text="Un appel suffit pour comprendre vos besoins. Nous vous proposons ensuite un devis adapté à la surface et à la fréquence souhaitées."
+    phone
+    seed={2}
+  />
 </BaseLayout>

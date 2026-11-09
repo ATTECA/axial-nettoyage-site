@@ -1,0 +1,54 @@
+---
+// "Zone d'intervention": title + 3 info cards (address, phone, hours)
+import { Icon } from "astro-icon/components";
+import { site, phoneHref, mapsHref } from "../data/site";
+import { sectionX, eyebrow } from "../lib/layout";
+
+// Same info as the footer, all coming from site.ts
+const infos = [
+  { icon: "tabler:map-pin", title: "Adresse", lines: [site.address], href: mapsHref },
+  { icon: "tabler:phone", title: "Téléphone", lines: [site.phone], href: phoneHref },
+  { icon: "tabler:clock", title: "Horaires", lines: [site.hours, site.hoursNote] },
+];
+---
+
+<section class:list={[sectionX, "py-20 md:py-28"]}>
+  <div class="max-w-2xl">
+    <p class={eyebrow}>Zone d’intervention</p>
+    <h2 class="mt-3 text-4xl leading-tight font-semibold text-balance md:text-5xl">
+      Montpellier et tout le département de l’Hérault
+    </h2>
+    <p class="mt-5 text-lg text-pretty text-ink/70">
+      Un doute sur votre commune&nbsp;? Appelez-nous, nous vous répondons
+      directement.
+    </p>
+  </div>
+
+  <ul class="mt-14 grid gap-5 md:mt-16 md:grid-cols-3">
+    {
+      infos.map((info) => (
+        <li class="rounded-3xl border border-white bg-white/70 p-7 shadow-[0_10px_30px_-12px_rgb(22_50_79/0.15)]">
+          <span class="flex size-12 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]">
+            <Icon name={info.icon} class="size-6" />
+          </span>
+          <h3 class="mt-6 text-xl font-semibold">{info.title}</h3>
+          {info.lines.map((line) =>
+            // Address and phone are links (Maps / call), hours are plain text
+            info.href ? (
+              <a
+                href={info.href}
+                class="mt-2 block text-pretty text-ink/70 transition-colors hover:text-primary"
+                target={info.href === mapsHref ? "_blank" : undefined}
+                rel={info.href === mapsHref ? "noopener" : undefined}
+              >
+                {line}
+              </a>
+            ) : (
+              <p class="mt-2 text-pretty text-ink/70">{line}</p>
+            ),
+          )}
+        </li>
+      ))
+    }
+  </ul>
+</section>
