@@ -3,8 +3,11 @@
 // whose mist sprays onto the title.
 import { Image } from "astro:assets";
 import FeatureCard from "./FeatureCard.astro";
-import { sectionX, streak } from "../lib/layout";
+import { sectionX } from "../lib/layout";
 import spray from "../assets/spray.jpg";
+
+// The 4-point star from the logo, centred on 0,0
+const star = "M0 -20L1.6 -1.6L20 0L1.6 1.6L0 20L-1.6 1.6L-20 0L-1.6 -1.6Z";
 
 const audiences = [
   {
@@ -42,24 +45,40 @@ const audiences = [
     class="absolute inset-0 -z-10 size-full object-cover object-[85%_top]"
   />
 
-  <div class="relative mx-auto max-w-2xl text-center text-white">
-    <!-- Soft dark-blue haze behind the text, so the white droplets of the
-         mist don't cut through the white paragraph -->
-    <div
-      class="absolute -inset-x-16 -inset-y-10 -z-10 bg-[radial-gradient(ellipse_at_center,rgb(20_60_120/0.55),transparent_70%)] blur-2xl"
-      aria-hidden="true"
-    ></div>
-    <h2 class="text-4xl leading-tight font-semibold text-balance drop-shadow-[0_2px_12px_rgb(10_30_60/0.35)] md:text-5xl">
-      Des prestations pensées pour les professionnels
+  <!-- Title only: the cards below say who we work for.
+       One line from md up (whitespace-nowrap), with a dark-blue shadow so
+       the letters stand out from the white mist.
+       &nbsp; = non-breaking space, the "?" never starts a line on its own -->
+  <div class="text-center text-white">
+    <h2 class="relative inline-block text-4xl leading-tight font-semibold [filter:drop-shadow(0_2px_4px_rgb(10_30_60/0.55))_drop-shadow(0_4px_24px_rgb(10_30_60/0.5))] md:text-6xl md:whitespace-nowrap">
+      <!-- The logo's 3 sparkles, top LEFT of the title: on the right the
+           white mist would swallow them. They twinkle one after the other -->
+      <span class="absolute -top-8 -left-14 block size-14" aria-hidden="true">
+        <svg viewBox="-20 -20 40 40" class="twinkle absolute top-0 left-0 size-10"><path d={star} fill="#a8cf45" /></svg>
+        <svg viewBox="-20 -20 40 40" class="twinkle absolute top-8 left-8 size-5 [animation-delay:0.6s]"><path d={star} fill="white" /></svg>
+        <svg viewBox="-20 -20 40 40" class="twinkle absolute top-1 left-10 size-4 [animation-delay:1.2s]"><path d={star} fill="#a8cf45" /></svg>
+      </span>
+      Pour qui intervenons-nous&nbsp;?
     </h2>
-    <span class:list={[streak, "mx-auto mt-5 w-28"]}></span>
-    <p class="mt-5 text-lg text-pretty text-white/90">
-      Entreprises, copropriétés, gestionnaires immobiliers ou professionnels du
-      BTP&nbsp;: nous adaptons nos interventions à votre activité.
-    </p>
   </div>
 
   <ul class="mt-14 grid gap-5 sm:grid-cols-2 md:mt-20 lg:grid-cols-4">
     {audiences.map((item) => <FeatureCard {...item} />)}
   </ul>
 </section>
+
+<style>
+  /* Sparkles: grow, turn a little and glow, then fade back */
+  .twinkle {
+    animation: twinkle 2.4s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px rgb(255 255 255 / 0.9)) drop-shadow(0 0 3px rgb(168 207 69 / 0.9));
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.75; transform: scale(0.8) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1) rotate(45deg); }
+  }
+  /* People who turn off animations in their system settings get still stars */
+  @media (prefers-reduced-motion: reduce) {
+    .twinkle { animation: none; }
+  }
+</style>
