@@ -16,8 +16,21 @@ import Zone from "../components/Zone.astro";
   description="Nettoyage sur mesure de bureaux, immeubles et chantiers à Montpellier et dans l’Hérault, depuis 15 ans. Devis gratuit."
 >
   <Hero />
-  <Strengths />
-  <Services />
+  <!--
+    Shared wrapper so a powder-blue gradient can start right under the hero,
+    show through the glass strengths bar, and fade to ice white in the services.
+    isolate: the gradient (-z-10) stays behind both sections but in front of the hero.
+    top-8 / md:top-16: starts exactly at the hero's bottom edge
+    (the strengths bar overlaps the hero by 2rem on phones, 4rem from md up).
+  -->
+  <div class="relative isolate">
+    <div
+      class="absolute inset-x-0 top-8 -z-10 h-224 bg-linear-to-b from-powder via-powder/50 to-transparent md:top-16"
+      aria-hidden="true"
+    ></div>
+    <Strengths />
+    <Services />
+  </div>
   <!-- {"…"} instead of "…" so   (non-breaking space before ? and :) works:
        inside props, &nbsp; would show up as literal text -->
   <CtaBand
