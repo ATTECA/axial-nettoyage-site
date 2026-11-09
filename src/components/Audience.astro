@@ -1,7 +1,10 @@
 ---
-// "Pour qui": the 4 kinds of clients
+// "Pour qui": the 4 kinds of clients, on a photo of a spray bottle
+// whose mist sprays onto the title.
+import { Image } from "astro:assets";
 import FeatureCard from "./FeatureCard.astro";
-import { sectionX } from "../lib/layout";
+import { sectionX, streak } from "../lib/layout";
+import spray from "../assets/spray.jpg";
 
 const audiences = [
   {
@@ -27,18 +30,36 @@ const audiences = [
 ];
 ---
 
-<section class:list={[sectionX, "py-20 md:py-28"]}>
-  <div class="mx-auto max-w-2xl text-center">
-    <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
+<section class:list={[sectionX, "relative isolate overflow-hidden py-24 md:py-32"]}>
+  <!-- The photo covers the section. object-[85%_top]: anchored to the right
+       so the spray stays visible when the screen is narrower than the photo.
+       alt="" = decorative -->
+  <Image
+    src={spray}
+    alt=""
+    widths={[960, 1600, 2400, 3168]}
+    sizes="100vw"
+    class="absolute inset-0 -z-10 size-full object-cover object-[85%_top]"
+  />
+
+  <div class="relative mx-auto max-w-2xl text-center text-white">
+    <!-- Soft dark-blue haze behind the text, so the white droplets of the
+         mist don't cut through the white paragraph -->
+    <div
+      class="absolute -inset-x-16 -inset-y-10 -z-10 bg-[radial-gradient(ellipse_at_center,rgb(20_60_120/0.55),transparent_70%)] blur-2xl"
+      aria-hidden="true"
+    ></div>
+    <h2 class="text-4xl leading-tight font-semibold text-balance drop-shadow-[0_2px_12px_rgb(10_30_60/0.35)] md:text-5xl">
       Des prestations pensées pour les professionnels
     </h2>
-    <p class="mt-5 text-lg text-pretty text-ink/70">
+    <span class:list={[streak, "mx-auto mt-5 w-28"]}></span>
+    <p class="mt-5 text-lg text-pretty text-white/90">
       Entreprises, copropriétés, gestionnaires immobiliers ou professionnels du
       BTP&nbsp;: nous adaptons nos interventions à votre activité.
     </p>
   </div>
 
-  <ul class="mt-14 grid gap-5 sm:grid-cols-2 md:mt-16 lg:grid-cols-4">
+  <ul class="mt-14 grid gap-5 sm:grid-cols-2 md:mt-20 lg:grid-cols-4">
     {audiences.map((item) => <FeatureCard {...item} />)}
   </ul>
 </section>

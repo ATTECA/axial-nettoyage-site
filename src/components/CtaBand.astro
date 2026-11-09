@@ -24,7 +24,11 @@ interface Props {
 const { eyebrow, title, text, phone = false, photo = false } = Astro.props;
 ---
 
-<section class:list={[sectionX, "py-10 md:py-14"]}>
+<!-- With the photo, more space below: the next section ("Pour qui") is a
+     full-width photo band, and the small card looked squashed against it.
+     pb = the space above the card (services pb + this pt: 80+40 / 112+56),
+     so the card sits exactly in the middle -->
+<section class:list={[sectionX, "py-10 md:py-14", photo && "pb-30 md:pb-42"]}>
   <div
     class:list={[
       "relative isolate overflow-hidden rounded-4xl bg-linear-to-br from-primary to-[#25629a] text-center text-white shadow-[0_24px_60px_-24px_rgb(22_50_79/0.6)]",

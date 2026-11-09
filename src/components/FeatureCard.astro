@@ -1,6 +1,6 @@
 ---
-// White card: blue glossy icon tile, title, lime bar, text.
-// Used by the "atouts" cards and the "pour qui" cards.
+// Frosted glass card over a blue background: glossy blue icon tile, title,
+// squeegee streak, text. Used by the "Pour qui" cards (spray photo behind).
 import { Icon } from "astro-icon/components";
 import { streak } from "../lib/layout";
 
@@ -13,13 +13,20 @@ interface Props {
 const { icon, title, text } = Astro.props;
 ---
 
-<li class="group rounded-3xl border border-white bg-white/70 p-7 text-center shadow-[0_10px_30px_-12px_rgb(22_50_79/0.15)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-14px_rgb(22_50_79/0.25)] motion-reduce:transition-none">
+<li class="group relative isolate overflow-hidden rounded-3xl border border-white/25 bg-linear-to-br from-white/20 via-white/10 to-white/5 p-7 text-center text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.4),0_24px_60px_-24px_rgb(10_30_60/0.6)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 motion-reduce:transition-none">
   <!-- Icon tile: blue gradient + top reflection, same family as the glossy buttons -->
   <span class="mx-auto flex size-14 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]">
     <Icon name={icon} class="size-7" />
   </span>
-  <h3 class="mt-6 text-xl font-semibold text-balance">{title}</h3>
+  <!--
+    min-h-[2lh] = always 2 lines tall (lh = one line of this text), title
+    centred inside. So a title that wraps ("Gestionnaires immobiliers") and
+    one that doesn't keep their streak and text at the same height.
+  -->
+  <h3 class="mt-6 flex min-h-[2lh] items-center justify-center text-xl font-semibold text-balance">
+    {title}
+  </h3>
   <!-- Squeegee streak (style in layout.ts). Stretches on hover -->
   <span class:list={[streak, "mx-auto mt-3 w-20 transition-all duration-300 group-hover:w-28"]}></span>
-  <p class="mt-4 text-pretty text-ink/70">{text}</p>
+  <p class="mt-4 text-pretty text-white/80">{text}</p>
 </li>
