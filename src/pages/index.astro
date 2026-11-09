@@ -21,8 +21,9 @@ import Zone from "../components/Zone.astro";
   <!-- {"…"} instead of "…" so   (non-breaking space before ? and :) works:
        inside props, &nbsp; would show up as literal text -->
   <CtaBand
-    title={"Vous voulez un prix pour vos locaux ?"}
-    text={"Décrivez-nous votre site : surface, fréquence, contraintes d’accès. Nous vous répondons avec un devis adapté, et nous passons sur place si c’est utile."}
+    photo
+    title={"Besoin d’un vrai coup de propre\u00a0?"}
+    text={"Surface, fréquence, accès\u00a0: on vous répond vite."}
   />
   <Audience />
   <About />
@@ -34,5 +35,6 @@ import Zone from "../components/Zone.astro";
     title="Parlons de vos locaux"
     text="Un appel suffit pour comprendre vos besoins. Nous vous proposons ensuite un devis adapté à la surface et à la fréquence souhaitées."
     phone
+    seed={2}
   />
 </BaseLayout>
