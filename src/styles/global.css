@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* The local preview page is in .gitignore, and Tailwind skips ignored
+   files: this tells it to read that page anyway (no effect if it's absent) */
+@source "../pages/preview.astro";
 
 @theme {
   --color-primary: #317bb9;

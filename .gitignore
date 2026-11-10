@@ -29,3 +29,5 @@ Branding/
 # fichiers système Windows
 desktop.ini
 Thumbs.db
+# page d'aperçu locale (jamais committée)
+src/pages/preview.astro

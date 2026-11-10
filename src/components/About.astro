@@ -1,29 +1,69 @@
 ---
-// "Qui sommes-nous": text on the left, team photo on the right
+// "Qui sommes-nous": photo on the left with two floating glass cards
+// ("15 ans d'expérience", "Un interlocuteur dédié"), text on the right.
+// The photo is on the left here, so it doesn't repeat the services layout.
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
-// Temporary stock photo: replace with a real photo of the Axial team
-import teamPhoto from "../assets/equipe.jpg";
+// Stock photo (Unsplash, Verne Ho): a bright office being cleaned, nobody
+// posing, so it doesn't pretend to be the team. Replace it with a real
+// photo of the Axial team when there is one.
+import photo from "../assets/bureau-lumineux.jpg";
 import { glossy, glossyBlue, arrow } from "../lib/buttons";
 import { sectionX, eyebrow, streak } from "../lib/layout";
+
+// Frosted glass for the floating cards, same recipe as the rest of the site
+const glass =
+  "border border-white/70 bg-white/75 shadow-[inset_0_1px_0_white,0_24px_50px_-20px_rgb(22_50_79/0.45)] backdrop-blur-xl";
 ---
 
 <section class:list={[sectionX, "py-20 md:py-28"]}>
-  <div class="grid items-center gap-10 md:grid-cols-2 md:gap-14 lg:gap-20">
+  <div class="grid items-center gap-16 md:grid-cols-2 lg:gap-24">
+    <!-- Photo + floating cards. alt="" = decorative stock photo.
+         max-h = screen height minus 12rem (header + the cards sticking out):
+         on wide screens the 4/5 photo would be taller than the screen,
+         so it gets shorter instead and the whole block always fits -->
+
+    <div class="relative">
+      <Image
+        src={photo}
+        alt=""
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 768px) 45vw, 100vw"
+        class="aspect-4/5 max-h-[calc(100svh-12rem)] w-full rounded-4xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]"
+      />
+
+      <!-- "15 ans" badge overlapping the top right corner.
+           The number uses the blue -> lime gradient, like "propreté" in the hero -->
+      <div class:list={[glass, "absolute -top-6 -right-4 rounded-3xl px-6 py-4 text-center md:-right-8"]}>
+        <p class="bg-linear-to-r from-primary to-accent bg-clip-text font-heading text-5xl leading-none font-semibold text-transparent">
+          15
+        </p>
+        <p class="mt-1 text-sm font-semibold text-ink/70">ans d’expérience</p>
+      </div>
+
+      <!-- "Interlocuteur dédié" card overlapping the bottom left corner -->
+      <div class:list={[glass, "absolute -bottom-6 -left-4 flex items-center gap-3 rounded-2xl p-4 pr-6 md:-left-8"]}>
+        <span class="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]">
+          <Icon name="tabler:user-check" class="size-5" />
+        </span>
+        <div>
+          <p class="font-heading font-semibold">Un interlocuteur dédié</p>
+          <p class="text-sm text-ink/60">du devis à l’intervention</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text -->
     <div>
       <p class={eyebrow}>Qui sommes-nous</p>
       <h2 class="mt-3 text-4xl leading-tight font-semibold text-balance md:text-5xl">
-        15 ans d’expérience au service de vos locaux
+        Une équipe assurée, au service de vos locaux
       </h2>
       <span class:list={[streak, "mt-5 w-28"]}></span>
       <p class="mt-6 text-lg text-pretty text-ink/70">
         Axial Nettoyage accompagne les entreprises, les syndics de copropriété
         et les gestionnaires immobiliers dans tout l’Hérault, avec des
         interventions rigoureuses et régulières.
-      </p>
-      <p class="mt-4 text-lg text-pretty text-ink/70">
-        Une équipe assurée pour intervenir dans vos locaux, et un responsable
-        dédié qui reste votre interlocuteur du devis à l’intervention.
       </p>
       <a
         href="/contact"
@@ -33,15 +73,5 @@ import { sectionX, eyebrow, streak } from "../lib/layout";
         <Icon name="tabler:arrow-right" class={arrow} />
       </a>
     </div>
-
-    <!-- Team photo. alt="" for now: it's a stock photo, not the real team.
-         With the real photo, describe it (e.g. "L'équipe Axial Nettoyage…") -->
-    <Image
-      src={teamPhoto}
-      alt=""
-      widths={[480, 800, 1200]}
-      sizes="(min-width: 768px) 45vw, 100vw"
-      class="aspect-square w-full rounded-3xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]"
-    />
   </div>
 </section>

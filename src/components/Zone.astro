@@ -15,8 +15,12 @@ const communes = [
   "Pézenas", "Clermont‑l’Hérault", "Lodève", "Ganges",
 ];
 
-// "Lundi au vendredi, 9h–12h et 14h–18h" -> days / times, shown on two lines
+// "Lundi au vendredi, 9h–12h et 14h–18h" -> days + time slots, so the times
+// can be written in words: "de 9h à 12h et de 14h à 18h"
 const [days, times] = site.hours.split(", ");
+const slots = times.split(" et ").map((slot) => slot.split("–")); // [["9h","12h"], ["14h","18h"]]
+//   = non-breaking space: "9h à 12h" never splits across two lines
+const nb = " ";
 
 // Map image: OpenStreetMap tiles (zoom 10) stitched, cropped to a square
 // around the Hérault and tinted once at build time (see the commit).
@@ -87,7 +91,19 @@ const tile =
           <span class={tile}><Icon name="tabler:clock" class="size-5" /></span>
           <div>
             <p class="text-sm text-ink/60">{days}</p>
-            <p class="font-heading text-lg font-semibold">{times}</p>
+            <p class="text-lg text-ink/80">
+              <!-- Each slot stays in one piece (whitespace-nowrap): the line
+                   can only break between "de 9h à 12h" and "et de 14h à 18h" -->
+              {slots.map(([start, end], i) => (
+                <>
+                  {i > 0 && " "}
+                  <span class="whitespace-nowrap">
+                    {i > 0 && "et "}de{nb}
+                    <span class="font-heading font-semibold text-ink">{start}{nb}à{nb}{end}</span>
+                  </span>
+                </>
+              ))}
+            </p>
           </div>
         </div>
       </div>
