@@ -7,33 +7,58 @@
 // Colour goes line by line: brand blue on edge A -> lime on edge B,
 // so both colours show all along the ribbon.
 //
-// It starts under the "Pourquoi choisir Axial" glass bar (the svg goes up
-// past the top of the section) and leaves the screen on the left at the end.
+// The defaults draw the ribbon behind the services: it starts under the
+// "Pourquoi choisir Axial" glass bar (the svg goes up past the top of the
+// section) and leaves the screen on the left at the end.
+// Pass other edges / colours / position to reuse it elsewhere (footer…).
+
+type Point = [number, number];
+type Rgb = [number, number, number];
 
 interface Props {
+  // The two edges: points each curve passes through, in order
+  edgeA?: Point[];
+  edgeB?: Point[];
+  // Colour of edge A and of edge B (the lines in between blend)
+  from?: Rgb;
+  to?: Rgb;
+  // Or several colours, edge A -> … -> edge B (replaces from/to)
+  stops?: Rgb[];
+  // Chaos inside the sheet: the inner lines ripple (in drawing units, 0 = off).
+  // The two edges don't move, so the overall shape stays the same
+  flutter?: number;
+  // Line strength: [inner lines, the two edge lines]
+  opacity?: [number, number];
+  // Size/position classes of the svg (replaces the services default)
+  position?: string;
   class?: string;
 }
-
-const { class: className } = Astro.props;
 
 // Drawing area: x 0 -> 1000 = left -> right edge of the screen,
 // y 0 -> 1000 = top -> bottom of the drawing. Stretched to the section's
 // size (preserveAspectRatio="none"), the lines stay 1px (non-scaling-stroke).
+// Move the points to reshape the ribbon (x outside 0-1000 = off screen).
+const {
+  edgeA = [
+    [560, 0], [700, 60], [640, 140], [260, 230], [90, 330], [330, 430],
+    [860, 520], [960, 610], [620, 700], [200, 790], [260, 880], [-200, 975],
+  ],
+  edgeB = [
+    [470, 0], [820, 90], [420, 170], [180, 260], [260, 360], [560, 420],
+    [700, 540], [860, 650], [430, 720], [120, 830], [430, 900], [-200, 1000],
+  ],
+  from = [49, 123, 185], // #317bb9 (primary)
+  to = [168, 207, 69], // #a8cf45 (accent)
+  stops,
+  flutter = 0,
+  opacity = [0.25, 0.65],
+  // -top-56: the drawing starts 14rem above the section, under the glass bar
+  position = "inset-x-0 -top-56 bottom-0 h-[calc(100%+14rem)] w-full",
+  class: className,
+} = Astro.props;
+
 const W = 1000;
 const H = 1000;
-
-type Point = [number, number];
-
-// The two edges of the ribbon: points the curve passes through, top to bottom.
-// Move these points to reshape the ribbon (x outside 0-1000 = off screen).
-const edgeA: Point[] = [
-  [560, 0], [700, 60], [640, 140], [260, 230], [90, 330], [330, 430],
-  [860, 520], [960, 610], [620, 700], [200, 790], [260, 880], [-200, 975],
-];
-const edgeB: Point[] = [
-  [470, 0], [820, 90], [420, 170], [180, 260], [260, 360], [560, 420],
-  [700, 540], [860, 650], [430, 720], [120, 830], [430, 900], [-200, 1000],
-];
 
 // Catmull-Rom: a smooth curve that passes exactly through every point.
 // Returns a function giving the curve's position at t (0 = start, 1 = end).
@@ -56,11 +81,16 @@ function smoothCurve(pts: Point[]) {
   };
 }
 
-// Mixes two colours: w = 0 -> first colour, w = 1 -> second colour
-const blue: [number, number, number] = [49, 123, 185]; // #317bb9 (primary)
-const lime: [number, number, number] = [168, 207, 69]; // #a8cf45 (accent)
-const mix = (w: number) =>
-  `rgb(${blue.map((c, k) => Math.round(c + (lime[k] - c) * w)).join(" ")})`;
+// Colour of a line: w = 0 -> first colour, w = 1 -> last colour,
+// blending between neighbouring stops in between
+const colours = stops ?? [from, to];
+const mix = (w: number) => {
+  const pos = w * (colours.length - 1);
+  const i = Math.min(Math.floor(pos), colours.length - 2);
+  const f = pos - i;
+  const [c1, c2] = [colours[i], colours[i + 1]];
+  return `rgb(${c1.map((c, k) => Math.round(c + (c2[k] - c) * f)).join(" ")})`;
+};
 
 const a = smoothCurve(edgeA);
 const b = smoothCurve(edgeB);
@@ -74,24 +104,31 @@ for (let i = 0; i < lines; i++) {
   // little near edge A, which gives the sheet a 3D, curved feel
   const w = k ** 1.35;
   const pts: string[] = [];
+  // bell = 0 on the two edges, 1 in the middle of the sheet:
+  // the middle lines ripple the most, the edges not at all
+  const bell = 4 * w * (1 - w);
   for (let s = 0; s <= steps; s++) {
-    const [ax, ay] = a(s / steps);
-    const [bx, by] = b(s / steps);
-    pts.push(`${(ax + (bx - ax) * w).toFixed(1)} ${(ay + (by - ay) * w).toFixed(1)}`);
+    const t = s / steps;
+    const [ax, ay] = a(t);
+    const [bx, by] = b(t);
+    // Two waves at different speeds, shifted for each line: the lines
+    // drift apart and back together, never in step = organic chaos
+    const dx = flutter * bell * Math.sin(2 * Math.PI * t * 7 + i * 0.45) * Math.sin(2 * Math.PI * t * 2.3 + 1);
+    const dy = flutter * bell * Math.cos(2 * Math.PI * t * 5 + i * 0.3) * Math.sin(2 * Math.PI * t * 3.1);
+    pts.push(`${(ax + (bx - ax) * w + dx).toFixed(1)} ${(ay + (by - ay) * w + dy).toFixed(1)}`);
   }
   strands.push({
     d: `M${pts.join("L")}`,
     colour: mix(k),
-    // The two edges a bit stronger; lime lines slightly stronger than blue
-    // ones, because lime is lighter and would look fainter otherwise
-    opacity: i === 0 || i === lines - 1 ? 0.65 : 0.25 + 0.15 * k,
+    // The two edges a bit stronger; lines towards edge B slightly stronger
+    // (on the services, lime is lighter and would look fainter otherwise)
+    opacity: i === 0 || i === lines - 1 ? opacity[1] : opacity[0] + 0.15 * k,
   });
 }
 ---
 
-<!-- -top-56: the drawing starts 14rem above the section, under the glass bar -->
 <svg
-  class:list={["pointer-events-none absolute inset-x-0 -top-56 bottom-0 -z-10 h-[calc(100%+14rem)] w-full", className]}
+  class:list={["pointer-events-none absolute -z-10", position, className]}
   viewBox={`0 0 ${W} ${H}`}
   preserveAspectRatio="none"
   aria-hidden="true"

@@ -3,6 +3,7 @@ import { Icon } from "astro-icon/components";
 import Logo from "../assets/logo.svg";
 import { site, services, phoneHref, emailHref, mapsHref } from "../data/site";
 import { streak } from "../lib/layout";
+import WaveRibbon from "./WaveRibbon.astro";
 
 // Computed at build time: the year updates each time the site is rebuilt
 const year = new Date().getFullYear();
@@ -37,6 +38,26 @@ const columns = [
   },
 ];
 
+// Ribbon behind the footer (see WaveRibbon.astro): a diagonal from the top
+// left to the bottom right. Points are [x, y] on a 1000 × 1000 grid stretched
+// over the footer (outside 0-1000 = off screen).
+// Big fold in the middle: edge B turns back (600,460 -> 540,620) while edge A
+// keeps going. A smaller copy of that fold at each end. The two edges never
+// pass the same point at the same moment (that would pinch every line).
+// Both edges need the same number of points, so they stay paired.
+const ribbonA: [number, number][] = [
+  [-150, 0], [60, 60], [150, 25], [180, 160], [300, 200], [500, 360],
+  [650, 300], [700, 520], [900, 760], [1020, 820], [1060, 950], [1200, 1000],
+];
+const ribbonB: [number, number][] = [
+  [-150, 140], [120, 120], [85, 215], [240, 180], [350, 110], [600, 460],
+  [540, 620], [800, 560], [1000, 820], [960, 920], [1100, 900], [1250, 980],
+];
+// 3-colour gradient across the ribbon: lime -> turquoise -> ice blue
+const ribbonStops: [number, number, number][] = [
+  [168, 207, 69], [64, 214, 200], [185, 213, 241],
+];
+
 // Contact block: icon + label + value (+ link)
 const contacts = [
   { icon: "tabler:map-pin", label: "Siège social", value: site.address, href: mapsHref },
@@ -48,6 +69,15 @@ const contacts = [
 <footer
   class="relative isolate overflow-hidden bg-linear-to-b from-primary to-[#25629a] text-white"
 >
+  <!-- flutter: the inner lines ripple out of step (chaos), the edges stay put -->
+  <WaveRibbon
+    edgeA={ribbonA}
+    edgeB={ribbonB}
+    stops={ribbonStops}
+    flutter={22}
+    opacity={[0.22, 0.6]}
+    position="inset-0 size-full"
+  />
   <div class="px-5 pt-16 pb-8 md:px-8 lg:px-20">
     <!-- Top: logo + contact | hours + area -->
     <div class="grid gap-12 lg:grid-cols-2">
