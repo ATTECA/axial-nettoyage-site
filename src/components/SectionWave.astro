@@ -1,0 +1,53 @@
+---
+// Solid blue wave at the top of a section, fading out going down.
+// Full brand blue at the wave's edge -> nothing at the bottom of the band,
+// so the section's title (placed lower) sits on the faded part.
+// Place it inside a "relative isolate" parent: it sits at the top, behind.
+
+interface Props {
+  // Shape of the wave's edge (see `shapes` below)
+  shape?: "slope" | "bowl" | "arch" | "soft";
+  class?: string;
+}
+
+const { shape = "slope", class: className } = Astro.props;
+
+// Wave edges on a 1440 × 320 grid (stretched to the section's width)
+const shapes = {
+  // Low on the left, rising smoothly to the top right (no bumps)
+  slope: "M0 230 C480 230 960 70 1440 40",
+  // Higher at the sides, dips in the middle
+  bowl: "M0 50 C360 220 1080 220 1440 50",
+  // Lower at the sides, rises in the middle
+  arch: "M0 210 C360 50 1080 50 1440 210",
+  // One long, gentle S
+  soft: "M0 170 C300 90 520 90 760 160 S1200 230 1440 140",
+};
+const edge = shapes[shape];
+// Same edge, closed down to the bottom: the filled band
+const band = `${edge} L1440 320 L0 320 Z`;
+// Fade: smooth "ease" curve (cosine), many stops. A 2-3 stop gradient changes
+// speed abruptly at each stop, and the eye sees that as a line. This one
+// starts slowly, speeds up, then slows down again: no visible break.
+const fade = Array.from({ length: 16 }, (_, i) => {
+  const t = i / 15;
+  return { offset: t, opacity: (0.5 * (1 + Math.cos(Math.PI * t))).toFixed(3) };
+});
+// Unique id (several waves can be on the same page)
+const id = `wave-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class:list={["pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 w-full", className]}
+  viewBox="0 0 1440 320"
+  preserveAspectRatio="none"
+  aria-hidden="true"
+>
+  <defs>
+    <!-- Solid blue at the top of the band, easing out to transparent at the bottom -->
+    <linearGradient id={id} gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="320">
+      {fade.map((s) => <stop offset={s.offset} stop-color="#317bb9" stop-opacity={s.opacity} />)}
+    </linearGradient>
+  </defs>
+  <path d={band} fill={`url(#${id})`} />
+</svg>

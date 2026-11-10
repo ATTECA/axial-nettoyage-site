@@ -3,6 +3,7 @@
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import PhotoPlaceholder from "./PhotoPlaceholder.astro";
+import SectionWave from "./SectionWave.astro";
 import { sectionX } from "../lib/layout";
 
 // All the photos in src/assets/equipment/, found by name (photo: "autolaveuse"
@@ -42,7 +43,10 @@ const machines = [
 ];
 ---
 
-<section class:list={[sectionX, "py-20 md:py-28"]}>
+<!-- relative isolate: the blue wave sits at the top, behind the content.
+     pt-56: the title starts lower, where the blue has faded -->
+<section class:list={[sectionX, "relative isolate pt-56 pb-20 md:pb-28"]}>
+  <SectionWave shape="slope" />
   <div class="mx-auto max-w-2xl text-center">
     <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
       Du matériel professionnel, adapté à chaque type de local
