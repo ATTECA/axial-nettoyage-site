@@ -9,7 +9,7 @@ import { Image } from "astro:assets";
 // photo of the Axial team when there is one.
 import photo from "../assets/bureau-lumineux.jpg";
 import { glossy, glossyBlue, arrow } from "../lib/buttons";
-import { sectionX, eyebrow, streak } from "../lib/layout";
+import { sectionX, eyebrow, streak, gradientText } from "../lib/layout";
 
 // Frosted glass for the floating cards, same recipe as the rest of the site
 const glass =
@@ -57,7 +57,7 @@ const glass =
     <div>
       <p class={eyebrow}>Qui sommes-nous</p>
       <h2 class="mt-3 text-4xl leading-tight font-semibold text-balance md:text-5xl">
-        Une équipe assurée, au service de vos locaux
+        Une équipe <span class={gradientText}>assurée</span>, au service de vos locaux
       </h2>
       <span class:list={[streak, "mt-5 w-28"]}></span>
       <p class="mt-6 text-lg text-pretty text-ink/70">

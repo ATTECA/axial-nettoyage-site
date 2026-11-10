@@ -5,6 +5,7 @@ import heroImage from "../assets/hero.png";
 import LogoAxial from "../assets/logo-axial.svg";
 import { phoneHref } from "../data/site";
 import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
+import { gradientText } from "../lib/layout";
 ---
 
 <!--
@@ -53,7 +54,7 @@ import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
           class="inline-block h-[1.11em] w-auto align-[-0.17em]"
           aria-hidden="true"
         />{" "}Nettoyage&nbsp;: votre partenaire{" "}
-        <span class="md:whitespace-nowrap"><span class="bg-linear-to-r from-secondary to-accent bg-clip-text text-transparent">propreté</span> à Montpellier</span>
+        <span class="md:whitespace-nowrap"><span class={gradientText}>propreté</span> à Montpellier</span>
       </h1>
 
       <p class="mt-6 max-w-xl text-lg text-pretty text-white/85">
