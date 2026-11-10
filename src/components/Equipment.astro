@@ -1,5 +1,11 @@
 ---
-// "Du matériel professionnel": 4 machines, photo + name + use
+// "Du matériel professionnel": an animated interactive list.
+// Left: the 4 machines, only the active one shows its text + a progress bar.
+// Right: a big photo; each new one is "wiped in" left -> right with a lime
+// squeegee line, then slowly zooms out.
+// The machines change on their own every 3.75 s while the section is on
+// screen; hovering or clicking a machine shows it right away.
+import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import type { ImageMetadata } from "astro";
 import PhotoPlaceholder from "./PhotoPlaceholder.astro";
@@ -20,7 +26,7 @@ const machines = [
     photo: "autolaveuse",
     icon: "tabler:wash",
     title: "Autolaveuses",
-    text: "Pour laver et sécher en un passage les grandes surfaces : halls, couloirs, ateliers.",
+    text: "Pour laver et sécher en un passage les grandes surfaces : halls, couloirs, ateliers.",
   },
   {
     photo: "monobrosse",
@@ -36,11 +42,21 @@ const machines = [
   },
   {
     photo: "haute-pression",
+    // The photo is almost square: the frame crops top and bottom.
+    // Showing the top keeps the man's head in the frame
+    position: "object-[50%_5%]",
     icon: "tabler:spray",
     title: "Nettoyeurs haute pression",
     text: "Pour les sols extérieurs, les quais de chargement et les locaux poubelles.",
   },
 ];
+
+// Time on each machine, in ms. The progress bar's CSS animation uses the
+// same value (passed as --eq-time below)
+const duration = 3750;
+
+const tile =
+  "flex size-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]";
 ---
 
 <!-- relative isolate: the blue wave sits at the top, behind the content.
@@ -58,27 +74,228 @@ const machines = [
     </p>
   </div>
 
-  <!-- 2 x 2 grid from tablet up -->
-  <ul class="mt-14 grid gap-x-10 gap-y-14 md:mt-16 md:grid-cols-2">
-    {
-      machines.map((machine) => (
-        <li class="text-center">
-          {/* alt="" = decorative: the machine's name is right below */}
-          {photoFor(machine.photo) ? (
-            <Image
-              src={photoFor(machine.photo)!}
-              alt=""
-              widths={[480, 800, 1200]}
-              sizes="(min-width: 768px) 45vw, 100vw"
-              class="aspect-3/2 w-full rounded-3xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]"
-            />
-          ) : (
-            <PhotoPlaceholder icon={machine.icon} class="aspect-3/2" />
-          )}
-          <h3 class="mt-7 text-2xl font-semibold">{machine.title}</h3>
-          <p class="mx-auto mt-3 max-w-md text-pretty text-ink/70">{machine.text}</p>
-        </li>
-      ))
-    }
-  </ul>
+  <div
+    class="mt-14 grid items-center gap-8 md:mt-16 lg:grid-cols-[2fr_3fr] lg:gap-12"
+    data-eq
+    data-duration={duration}
+    style={`--eq-time: ${duration}ms`}
+  >
+    <!-- The list (below the photo on phones, on the left from lg up) -->
+    <ul class="order-2 flex flex-col gap-2 lg:order-1">
+      {
+        machines.map((m, i) => (
+          <li>
+            <button
+              type="button"
+              class="eq-tab w-full rounded-3xl border border-transparent p-5 text-left transition duration-300 hover:bg-white/50"
+              data-tab={i}
+            >
+              <span class="flex items-center gap-4">
+                <span class={tile}>
+                  <Icon name={m.icon} class="size-5" />
+                </span>
+                <span class="font-heading text-lg font-semibold">{m.title}</span>
+              </span>
+              <!-- Folding text: grid rows 0fr -> 1fr = smooth height animation -->
+              <span class="eq-more grid">
+                <span class="overflow-hidden">
+                  <span class="block pt-3 pl-15 text-pretty text-ink/70">{m.text}</span>
+                  <!-- Progress: fills up while this machine is shown -->
+                  <span class="mt-4 ml-15 block h-1 overflow-hidden rounded-full bg-ink/10">
+                    <span class="eq-progress block h-full origin-left rounded-full bg-linear-to-r from-primary to-accent" />
+                  </span>
+                </span>
+              </span>
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- The photos, stacked; the active one is wiped in over the others.
+         alt="" = decorative: the machine's name is in the list -->
+    <div class="relative order-1 aspect-4/3 overflow-hidden rounded-4xl bg-powder/40 shadow-[0_30px_70px_-30px_rgb(22_50_79/0.5)] lg:order-2">
+      {
+        machines.map((m, i) => (
+          <div class="eq-panel absolute inset-0" data-panel={i}>
+            {photoFor(m.photo) ? (
+              <Image
+                src={photoFor(m.photo)!}
+                alt=""
+                widths={[800, 1200]}
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                class:list={["eq-img size-full object-cover", m.position]}
+              />
+            ) : (
+              <PhotoPlaceholder icon={m.icon} class="size-full rounded-none" />
+            )}
+          </div>
+        ))
+      }
+      <!-- The squeegee: a thin lime line that sweeps across with the wipe -->
+      <span
+        class="eq-squeegee pointer-events-none absolute inset-y-0 left-0 w-1 bg-accent shadow-[0_0_18px_4px_rgb(168_207_69/0.7)]"
+        aria-hidden="true"
+      ></span>
+    </div>
+  </div>
 </section>
+
+<style is:global>
+  /* ---- List ---- */
+  .eq-tab[data-active] {
+    border-color: white;
+    background: rgb(255 255 255 / 0.8);
+    box-shadow: 0 18px 40px -20px rgb(22 50 79 / 0.35);
+  }
+  .eq-more {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows 0.5s ease, opacity 0.4s ease;
+  }
+  .eq-tab[data-active] .eq-more {
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
+  .eq-progress {
+    transform: scaleX(0);
+  }
+  .eq-tab[data-active] .eq-progress {
+    animation: eq-fill var(--eq-time) linear forwards;
+  }
+  [data-eq][data-paused] .eq-progress {
+    animation-play-state: paused;
+  }
+  @keyframes eq-fill {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* ---- Photos ---- */
+  /* Hidden panels are clipped away on the right; the active one is revealed
+     left -> right over the previous one (which stays underneath) */
+  .eq-panel {
+    clip-path: inset(0 100% 0 0);
+  }
+  .eq-panel[data-shown] {
+    clip-path: inset(0 0 0 0);
+  }
+  .eq-panel[data-active] {
+    transition: clip-path 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  /* Slow zoom-out on the active photo */
+  .eq-img {
+    transform: scale(1.12);
+  }
+  .eq-panel[data-active] .eq-img {
+    transform: scale(1);
+    transition: transform 6s ease-out;
+  }
+  /* Squeegee line, restarted by the script on each wipe */
+  .eq-squeegee {
+    opacity: 0;
+  }
+  .eq-squeegee[data-run] {
+    animation: eq-wipe 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+  @keyframes eq-wipe {
+    0% {
+      left: 0;
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      left: 100%;
+      opacity: 0;
+    }
+  }
+
+  /* People who turn off animations: simple swap, no zoom, no wipe line */
+  @media (prefers-reduced-motion: reduce) {
+    .eq-panel {
+      clip-path: none;
+      opacity: 0;
+    }
+    .eq-panel[data-shown] {
+      opacity: 1;
+    }
+    .eq-panel,
+    .eq-img,
+    .eq-more {
+      transition: none !important;
+    }
+    .eq-img {
+      transform: none;
+    }
+    .eq-squeegee {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-eq]").forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLElement>("[data-tab]")];
+    const panels = [...root.querySelectorAll<HTMLElement>("[data-panel]")];
+    const squeegee = root.querySelector<HTMLElement>(".eq-squeegee")!;
+    const duration = Number(root.dataset.duration);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let current = -1;
+    let elapsed = 0;
+    let z = 1;
+
+    const show = (i: number) => {
+      if (i === current) return;
+      current = i;
+      elapsed = 0; // the new machine gets its full time
+      tabs.forEach((t, k) => t.toggleAttribute("data-active", k === i));
+
+      const panel = panels[i];
+      panels.forEach((p) => p.removeAttribute("data-active"));
+      // Start hidden (clipped), bring to the front, then reveal: the wipe
+      panel.removeAttribute("data-shown");
+      panel.style.zIndex = String(++z);
+      void panel.offsetWidth; // apply the hidden state before animating
+      panel.setAttribute("data-active", "");
+      panel.setAttribute("data-shown", "");
+      // Once the wipe is done, hide the others (so they can wipe in later)
+      setTimeout(() => panels.forEach((p) => p !== panels[current] && p.removeAttribute("data-shown")), 950);
+
+      // The squeegee line sweeps across
+      squeegee.removeAttribute("data-run");
+      void squeegee.offsetWidth;
+      squeegee.setAttribute("data-run", "");
+    };
+
+    // Hover or click = show that machine now
+    tabs.forEach((t, k) => {
+      t.addEventListener("click", () => show(k));
+      t.addEventListener("mouseenter", () => show(k));
+    });
+
+    // Autoplay: changes on its own, so visitors who don't think of hovering
+    // still see every machine. Only while the section is on screen
+    // (and never for people who turn off animations).
+    let paused = true;
+    root.setAttribute("data-paused", "");
+    setInterval(() => {
+      if (paused) return;
+      elapsed += 100;
+      if (elapsed >= duration) show((current + 1) % tabs.length);
+    }, 100);
+    if (!reduce) {
+      new IntersectionObserver(
+        ([entry]) => {
+          paused = !entry.isIntersecting;
+          root.toggleAttribute("data-paused", paused);
+        },
+        { threshold: 0.4 },
+      ).observe(root);
+    }
+
+    show(0);
+  });
+</script>
