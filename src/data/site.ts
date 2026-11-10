@@ -5,7 +5,8 @@ export const site = {
   email: "axial.nettoyage34@gmail.com",
   address: "48 rue Claude Balbastre, 34070 Montpellier",
   hours: "Lundi au vendredi, 9h–12h et 14h–18h",
-  hoursNote: "Interventions tôt le matin, le soir ou le week-end",
+  // ‑ = non-breaking hyphen: "week-end" never splits across two lines
+  hoursNote: "Interventions tôt le matin, le soir ou le week‑end",
   zone: "Montpellier et tout l’Hérault",
 };
 
