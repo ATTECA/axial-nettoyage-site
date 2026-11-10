@@ -79,7 +79,10 @@ const tile =
       </ul>
 
       <!-- Phone + hours in one glass card, the important bits in bold -->
-      <div class="mt-9 flex flex-col gap-5 rounded-3xl border border-white bg-white/70 p-6 shadow-[0_18px_40px_-20px_rgb(22_50_79/0.25)] sm:flex-row sm:gap-8">
+      <!-- Sticker: tilted the other way from the lime pill below (rotate-2),
+           thick white edge, straightens up on hover. backface-hidden keeps
+           the tilted text sharp -->
+      <div class="mt-9 flex rotate-2 flex-col gap-5 rounded-3xl bg-white p-6 ring-4 ring-white/80 shadow-[0_24px_50px_-20px_rgb(22_50_79/0.4)] backface-hidden transition duration-300 hover:rotate-0 sm:inline-flex sm:flex-row sm:gap-8">
         <div class="flex items-start gap-4">
           <span class={tile}><Icon name="tabler:phone" class="size-5" /></span>
           <div>
@@ -111,7 +114,9 @@ const tile =
       </div>
       <!-- The "extra hours" note as a lime sticker (crooked, white border),
            so it doesn't get skipped -->
-      <p class:list={[sticker, "mt-5 inline-flex items-center gap-2 rounded-full bg-accent/90 px-5 py-2 text-sm font-semibold text-ink shadow-[0_14px_30px_-12px_rgb(22_50_79/0.55)] transition"]}>
+      <!-- block wrapper: puts the pill on its own line, shifted right under the card -->
+      <br class="hidden sm:block" />
+      <p class:list={[sticker, "relative z-10 mt-3 inline-flex sm:ml-24 items-center gap-2 rounded-full bg-accent/90 px-5 py-2 text-sm font-semibold text-ink shadow-[0_14px_30px_-12px_rgb(22_50_79/0.55)] transition"]}>
         <Icon name="tabler:moon-stars" class="size-4" />
         {site.hoursNote}
       </p>
