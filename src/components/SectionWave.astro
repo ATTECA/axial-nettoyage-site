@@ -1,33 +1,39 @@
 ---
 // Wave at the top of a section, in two mirrored halves that touch along
 // the same curve:
-// - below the curve: brand blue, solid at the edge, fading out downwards
+// - below the curve: a blue, solid near the edge, fading out downwards
 //   (the section's title, placed lower, sits on the faded part)
-// - above the curve: lime, softer than the blue, fading out upwards
+// - above the curve (optional): lime, softer than the blue, fading upwards
 // Place it inside a "relative isolate" parent: it sits at the top, behind.
 
 interface Props {
   // Shape of the wave's edge (see `shapes` below)
-  shape?: "slope" | "bowl" | "arch" | "soft";
+  shape?: "slope" | "swell";
   // false = blue only, no lime above
   lime?: boolean;
+  // Colour of the band below the curve (brand blue by default)
+  color?: string;
   class?: string;
 }
 
-const { shape = "slope", lime = true, class: className } = Astro.props;
+const { shape = "slope", lime = true, color = "#317bb9", class: className } = Astro.props;
 
-// Wave edges on a 1440 × 320 grid (stretched to the section's width)
+// Each shape is drawn on a 1440 × h grid, stretched to the section's width
+// (1 grid unit = 1px of height). fadeFrom = where the blue starts fading.
 const shapes = {
-  // Low on the left, rising smoothly to the top right (no bumps)
-  slope: "M0 230 C480 230 960 70 1440 40",
-  // Higher at the sides, dips in the middle
-  bowl: "M0 50 C360 220 1080 220 1440 50",
-  // Lower at the sides, rises in the middle
-  arch: "M0 210 C360 50 1080 50 1440 210",
-  // One long, gentle S
-  soft: "M0 170 C300 90 520 90 760 160 S1200 230 1440 140",
+  // "Matériel": low on the left, rising smoothly to the top right
+  slope: { h: 320, fadeFrom: 40, d: "M0 230 C480 230 960 70 1440 40" },
+  // Photo card: one long, smooth S across the whole width. Low on the left,
+  // rises gently behind the card, crests above it on the right, then eases
+  // back down at the edge. Flat (horizontal) at both ends and at the crest,
+  // so there are no kinks.
+  swell: {
+    h: 480,
+    fadeFrom: 120,
+    d: "M0 290 C380 290 640 95 1020 95 C1220 95 1340 140 1440 165",
+  },
 };
-const edge = shapes[shape];
+const { h, fadeFrom, d: edge } = shapes[shape];
 
 // Fade: smooth "ease" curve (cosine), many stops. A 2-3 stop gradient changes
 // speed abruptly at each stop, and the eye sees that as a line. This one
@@ -44,15 +50,16 @@ const id = `wave-${Math.random().toString(36).slice(2, 8)}`;
 ---
 
 <svg
-  class:list={["pointer-events-none absolute inset-x-0 top-0 -z-10 h-80 w-full", className]}
-  viewBox="0 0 1440 320"
+  class:list={["pointer-events-none absolute inset-x-0 top-0 -z-10 w-full", className]}
+  style={`height: ${h / 16}rem`}
+  viewBox={`0 0 1440 ${h}`}
   preserveAspectRatio="none"
   aria-hidden="true"
 >
   <defs>
-    <!-- Blue: solid at the top of the band, easing out at the bottom -->
-    <linearGradient id={`${id}-down`} gradientUnits="userSpaceOnUse" x1="0" y1="40" x2="0" y2="320">
-      {fade(1).map((s) => <stop offset={s.offset} stop-color="#317bb9" stop-opacity={s.opacity} />)}
+    <!-- Blue: solid near the edge, easing out at the bottom -->
+    <linearGradient id={`${id}-down`} gradientUnits="userSpaceOnUse" x1="0" y1={fadeFrom} x2="0" y2={h}>
+      {fade(1).map((s) => <stop offset={s.offset} stop-color={color} stop-opacity={s.opacity} />)}
     </linearGradient>
     <!-- Lime: 50% at the curve's lowest point, easing out at the top -->
     <linearGradient id={`${id}-up`} gradientUnits="userSpaceOnUse" x1="0" y1="230" x2="0" y2="0">
@@ -61,6 +68,6 @@ const id = `wave-${Math.random().toString(36).slice(2, 8)}`;
   </defs>
   <!-- Above the curve: lime -->
   {lime && <path d={`${edge} L1440 0 L0 0 Z`} fill={`url(#${id}-up)`} />}
-  <!-- Below the curve: blue -->
-  <path d={`${edge} L1440 320 L0 320 Z`} fill={`url(#${id}-down)`} />
+  <!-- Below the curve: the blue -->
+  <path d={`${edge} L1440 ${h} L0 ${h} Z`} fill={`url(#${id}-down)`} />
 </svg>

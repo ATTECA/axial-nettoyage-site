@@ -9,6 +9,7 @@ import { glossy, glossyLime, glossyWhite, arrow, sticker } from "../lib/buttons"
 import { sectionX } from "../lib/layout";
 import Sparkles from "./Sparkles.astro";
 import Sparkle from "./Sparkle.astro";
+import SectionWave from "./SectionWave.astro";
 import { Image } from "astro:assets";
 import soapPhoto from "../assets/vitre-savon-texte.jpg";
 
@@ -28,7 +29,12 @@ const { eyebrow, title, text, phone = false, photo = false } = Astro.props;
 <!-- Same space above and below the card. Above, the previous section's
      bottom padding adds up with this pt (80+40 / 112+56), so pb matches
      that total and the card sits exactly in the middle -->
-<section class:list={[sectionX, "pt-10 pb-30 md:pt-14 md:pb-42"]}>
+<section class:list={[sectionX, "pt-10 pb-30 md:pt-14 md:pb-42", photo && "relative isolate"]}>
+  <!-- Photo card only: a sky-blue swell behind it (different shape and
+       colour from the "Matériel" wave, so the two don't look copied) -->
+  {/* -translate-y-24: moved up 6rem, so the crest shows above the card
+      (as in the preview) without changing the spacing around the card */}
+  {photo && <SectionWave shape="swell" color="#5aabe8" lime={false} class="-translate-y-24" />}
   <div
     class:list={[
       "relative isolate overflow-hidden rounded-4xl bg-linear-to-br from-primary to-[#25629a] text-center text-white shadow-[0_24px_60px_-24px_rgb(22_50_79/0.6)]",
