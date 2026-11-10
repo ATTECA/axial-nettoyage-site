@@ -1,0 +1,17 @@
+---
+// Squeegee streak under a section title, ending in the logo's sparkles:
+// "wiped, then it shines". Used under the big section titles only.
+import Sparkle from "./Sparkle.astro";
+import { streak } from "../lib/layout";
+
+interface Props {
+  // Extra classes (margin, centring…)
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<span class:list={["flex items-center", className]} aria-hidden="true">
+  <span class:list={[streak, "w-28"]}></span>
+  <Sparkle class="-ml-2 size-8" />
+</span>

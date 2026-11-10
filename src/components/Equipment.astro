@@ -3,7 +3,7 @@
 // Left: the 4 machines, only the active one shows its text + a progress bar.
 // Right: a big photo; each new one is "wiped in" left -> right with a lime
 // squeegee line, then slowly zooms out.
-// The machines change on their own every 3.75 s while the section is on
+// The machines change on their own every 1.875 s while the section is on
 // screen; hovering or clicking a machine shows it right away.
 import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
@@ -53,7 +53,7 @@ const machines = [
 
 // Time on each machine, in ms. The progress bar's CSS animation uses the
 // same value (passed as --eq-time below)
-const duration = 3750;
+const duration = 1875;
 
 const tile =
   "flex size-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]";

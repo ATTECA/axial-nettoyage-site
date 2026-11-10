@@ -6,7 +6,8 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import mapImage from "../assets/carte-herault.jpg";
 import { site, phoneHref } from "../data/site";
-import { sectionX, streak, gradientText } from "../lib/layout";
+import { sectionX, gradientText } from "../lib/layout";
+import TitleStreak from "./TitleStreak.astro";
 
 // Main towns. ‑ = non-breaking hyphen: a name never splits across two lines
 const communes = [
@@ -50,7 +51,7 @@ const tile =
       <h2 class="max-w-2xl text-4xl leading-tight font-semibold text-balance md:text-5xl">
         Montpellier et tout le département de <span class={gradientText}>l’Hérault</span>
       </h2>
-      <span class:list={[streak, "mt-5 w-28"]}></span>
+      <TitleStreak class="mt-5" />
       <p class="mt-5 max-w-xl text-lg text-pretty text-ink/70">
         Un doute sur votre commune&nbsp;? Appelez-nous, nous vous répondons
         directement.

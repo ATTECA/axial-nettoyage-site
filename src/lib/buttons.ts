@@ -21,6 +21,14 @@ export const glossyLime =
 export const glossyWhite =
   "bg-linear-to-b from-white to-[#dfeaf3] text-primary shadow-[inset_0_-2px_0_rgb(49_123_185/0.15),0_6px_16px_-4px_rgb(22_50_79/0.45)]";
 
+// "Sticker" effect: slightly crooked, with a thick white border, like a
+// sticker slapped on the glass. Straightens up and grows on hover.
+// backface-hidden: without it, Chrome draws tilted elements blurry
+// (the text looked foggy until hovered, when the button is straight again).
+// Usage: class:list={[glossy, glossyLime, sticker, "px-5 py-2.5"]}
+export const sticker =
+  "-rotate-3 ring-2 ring-white/70 backface-hidden duration-300 hover:scale-110 hover:rotate-0 sm:ring-4";
+
 // Arrow that nudges right on hover
 export const arrow = "size-4 transition-transform group-hover/pill:translate-x-1";
 

@@ -3,7 +3,9 @@
 import { Icon } from "astro-icon/components";
 import { site } from "../data/site";
 import { glossy, glossyBlue, arrow } from "../lib/buttons";
-import { sectionX, streak } from "../lib/layout";
+import { sectionX } from "../lib/layout";
+import Sparkle from "./Sparkle.astro";
+import TitleStreak from "./TitleStreak.astro";
 import { Image } from "astro:assets";
 import wetGlass from "../assets/vitre-mouillee.jpg";
 
@@ -58,7 +60,7 @@ const steps = [
       <h2 class="text-4xl leading-tight font-semibold text-balance md:text-5xl">
         Comment ça se passe
       </h2>
-      <span class:list={[streak, "mt-5 w-28"]}></span>
+      <TitleStreak class="mt-5" />
       <p class="mt-6 text-lg text-pretty text-ink/80">
         Quatre étapes, et rien ne démarre avant votre accord sur le devis.
       </p>
@@ -66,6 +68,7 @@ const steps = [
         href="/devis"
         class:list={[glossy, glossyBlue, "mt-9 inline-flex px-7 py-3.5"]}
       >
+        <Sparkle color="white" class="size-5" />
         Demander un devis
         <Icon name="tabler:arrow-right" class={arrow} />
       </a>

@@ -1,0 +1,34 @@
+---
+// Brand sparkles. Size with a class (e.g. "size-6"). Decorative: hidden from
+// screen readers.
+//   variant "axes"   (default) = the "Mini Axes" graphic element from the
+//                    brand files (Branding/…/Graphic Elements/Mini Axes),
+//                    exact shapes: 3 thin stars. Use it for decoration.
+//   variant "bullet" = one bigger, bolder star (thicker arms), made for list
+//                    bullets: the thin brand stars read as "+" at that size.
+
+interface Props {
+  variant?: "axes" | "bullet";
+  // Fill colour (lime by default; "white" on photos or blue backgrounds)
+  color?: string;
+  class?: string;
+}
+
+const { variant = "axes", color = "#a8cf45", class: className } = Astro.props;
+---
+
+{
+  variant === "axes" ? (
+    // Copied from "Mini Axes couleur.svg", viewBox cropped to the stars
+    <svg viewBox="124 90 352 420" class:list={["inline-block shrink-0", className]} aria-hidden="true">
+      <polygon fill={color} points="274.81 94.17 284.7 210.69 401.23 220.58 284.7 230.48 274.81 347 264.92 230.48 148.4 220.58 264.92 210.69 274.81 94.17" />
+      <polygon fill={color} points="408.68 293.6 413.63 351.86 471.89 356.81 413.63 361.75 408.68 420.01 403.74 361.75 345.48 356.81 403.74 351.86 408.68 293.6" />
+      <polygon fill={color} points="205.14 351.76 211.17 422.77 282.17 428.8 211.17 434.82 205.14 505.83 199.11 434.82 128.11 428.8 199.11 422.77 205.14 351.76" />
+    </svg>
+  ) : (
+    // Same 4-point star, with arms 22% of the radius instead of ~8%
+    <svg viewBox="-21 -21 42 42" class:list={["inline-block shrink-0", className]} aria-hidden="true">
+      <polygon fill={color} points="0 -20 4.4 -4.4 20 0 4.4 4.4 0 20 -4.4 4.4 -20 0 -4.4 -4.4" />
+    </svg>
+  )
+}

@@ -6,6 +6,7 @@ import LogoAxial from "../assets/logo-axial.svg";
 import { phoneHref } from "../data/site";
 import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
 import { gradientText } from "../lib/layout";
+import Sparkle from "./Sparkle.astro";
 ---
 
 <!--
@@ -66,6 +67,7 @@ import { gradientText } from "../lib/layout";
           href="/devis"
           class:list={[glossy, glossyLime, "flex justify-center px-7 py-3.5"]}
         >
+          <Sparkle color="#16324f" class="size-5" />
           Devis gratuit
           <Icon name="tabler:arrow-right" class={arrow} />
         </a>
