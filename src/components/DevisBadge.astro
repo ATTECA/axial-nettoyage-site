@@ -1,0 +1,105 @@
+---
+// Scalloped "Devis gratuit" sticker (a link to /devis), meant to overlap
+// the corner of a photo. Layers, from back to front:
+// - the scalloped shape: white border (sticker edge) + glossy lime fill
+// - "DEVIS GRATUIT • SANS ENGAGEMENT •" written around the edge, slowly turning
+// - the Mini Axes sparkles + "Devis gratuit" in the middle
+// - a band of light sweeping across every few seconds (the glint)
+// Tilted like a sticker; straightens up and grows on hover.
+import Sparkle from "./Sparkle.astro";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+// Scalloped outline on a 100 × 100 grid: a circle whose radius waves
+// 10 times around (radius = 44 + 4 × cos(10 × angle))
+const bumps = 10;
+const points: string[] = [];
+for (let i = 0; i <= 360; i++) {
+  const a = (i * Math.PI) / 180;
+  const r = 44 + 4 * Math.cos(bumps * a);
+  points.push(`${(50 + r * Math.cos(a)).toFixed(2)} ${(50 + r * Math.sin(a)).toFixed(2)}`);
+}
+const shape = `M${points.join("L")}Z`;
+const id = `badge-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<!-- Outer div: takes the position classes from outside (e.g. "absolute
+     -right-8 -bottom-8"). The link inside needs `relative` for its layers,
+     and both on one element would conflict. -->
+<div class={className}>
+<a
+  href="/devis"
+  aria-label="Demander un devis gratuit"
+  class="devis-badge group relative block size-36 rotate-12 transition duration-300 hover:scale-110 hover:rotate-0 backface-hidden"
+>
+  <svg viewBox="0 0 100 100" class="absolute inset-0 size-full drop-shadow-[0_14px_18px_rgb(22_50_79/0.45)]" aria-hidden="true">
+    <defs>
+      <linearGradient id={`${id}-fill`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d4ec8e" />
+        <stop offset="1" stop-color="#94bd31" />
+      </linearGradient>
+      <!-- Circle path for the text around the edge -->
+      <!-- Circle path for the text (radius 31, inside the bumps) -->
+      <path id={`${id}-ring`} d="M50 50 m-31 0 a31 31 0 1 1 62 0 a31 31 0 1 1 -62 0" />
+      <clipPath id={`${id}-clip`}><path d={shape} /></clipPath>
+    </defs>
+    <!-- Sticker edge (white) + glossy lime body -->
+    <path d={shape} fill="white" />
+    <path d={shape} fill={`url(#${id}-fill)`} transform="translate(50 50) scale(0.92) translate(-50 -50)" />
+    <!-- Top reflection, like the glossy buttons -->
+    <ellipse cx="50" cy="28" rx="30" ry="14" fill="white" opacity="0.28" clip-path={`url(#${id}-clip)`} />
+    <!-- Centre disc, a touch lighter, with a dashed "stitched" white circle:
+         separates the label from the text ring -->
+    <circle cx="50" cy="50" r="23" fill="white" opacity="0.18" />
+    <circle cx="50" cy="50" r="24.5" fill="none" stroke="white" stroke-width="0.9" stroke-dasharray="2 1.6" opacity="0.8" />
+    <!-- Text around the edge, slowly turning (natural letter spacing) -->
+    <g class="devis-badge-ring">
+      <text font-size="7.2" font-weight="700" letter-spacing="1.1" fill="#16324f" opacity="0.75" font-family="Sora Variable, sans-serif">
+        <textPath href={`#${id}-ring`}>DEVIS GRATUIT • SANS ENGAGEMENT •</textPath>
+      </text>
+    </g>
+    <!-- Glint sweeping across -->
+    <g clip-path={`url(#${id}-clip)`}>
+      <rect class="devis-badge-glint" x="-40" y="-10" width="18" height="120" fill="white" opacity="0.55" transform="skewX(-20)" />
+    </g>
+  </svg>
+
+  <!-- Middle: sparkles + label -->
+  <span class="absolute inset-0 flex flex-col items-center justify-center text-center font-heading text-ink">
+    <span class="text-[15px] leading-tight font-bold">
+      <!-- The sparkles sit above the end of "Devis", like the logo's
+           stars above the X -->
+      <span class="relative inline-block">
+        Devis
+        <Sparkle color="#16324f" class="absolute -top-2.5 -right-3 size-4" />
+      </span>
+      <br />gratuit
+    </span>
+  </span>
+</a>
+</div>
+
+<style>
+  /* Text ring: one turn every 18 s */
+  .devis-badge-ring {
+    transform-origin: 50px 50px;
+    animation: devis-turn 18s linear infinite;
+  }
+  @keyframes devis-turn {
+    to { transform: rotate(360deg); }
+  }
+  /* Glint: crosses in 0.9 s, then waits (every 4 s) */
+  .devis-badge-glint {
+    animation: devis-glint 4s ease-in-out infinite;
+  }
+  @keyframes devis-glint {
+    0% { translate: 0 0; }
+    22%, 100% { translate: 150px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .devis-badge-ring, .devis-badge-glint { animation: none; }
+  }
+</style>

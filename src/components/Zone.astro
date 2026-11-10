@@ -8,6 +8,7 @@ import mapImage from "../assets/carte-herault.jpg";
 import { site, phoneHref } from "../data/site";
 import { sectionX, gradientText } from "../lib/layout";
 import TitleStreak from "./TitleStreak.astro";
+import { sticker } from "../lib/buttons";
 
 // Main towns. ‑ = non-breaking hyphen: a name never splits across two lines
 const communes = [
@@ -108,9 +109,10 @@ const tile =
           </div>
         </div>
       </div>
-      <!-- The "extra hours" note as a lime pill, so it doesn't get skipped -->
-      <p class="mt-4 inline-flex items-center gap-2 rounded-full bg-accent/20 px-4 py-1.5 text-sm font-medium text-ink/80">
-        <Icon name="tabler:moon-stars" class="size-4 text-[#6f9426]" />
+      <!-- The "extra hours" note as a lime sticker (crooked, white border),
+           so it doesn't get skipped -->
+      <p class:list={[sticker, "mt-5 inline-flex items-center gap-2 rounded-full bg-accent/90 px-5 py-2 text-sm font-semibold text-ink shadow-[0_14px_30px_-12px_rgb(22_50_79/0.55)] transition"]}>
+        <Icon name="tabler:moon-stars" class="size-4" />
         {site.hoursNote}
       </p>
     </div>
@@ -148,10 +150,12 @@ const tile =
         class="absolute flex -translate-x-1/2 -translate-y-full flex-col items-center"
         style={`left:${mtp.x}%;top:${mtp.y}%`}
       >
-        <span class="rounded-full bg-linear-to-b from-secondary to-primary px-3 py-1 font-heading text-sm font-semibold text-white shadow-lg">
+        <!-- Sticker label: tilted, slightly see-through white border, glossy,
+             with a glint crossing it every 3.5 s (.glint in the style below) -->
+        <span class="glint relative -rotate-3 overflow-hidden rounded-full bg-linear-to-b from-secondary to-primary px-4 py-1.5 font-heading text-sm font-semibold text-white ring-4 ring-white/75 backface-hidden shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_14px_30px_-12px_rgb(22_50_79/0.55)] transition duration-300 hover:scale-110 hover:rotate-0">
           Montpellier
         </span>
-        <Icon name="tabler:map-pin-filled" class="-mt-1 size-9 text-primary drop-shadow" />
+        <Icon name="tabler:map-pin-filled" class="mt-1 size-9 text-primary drop-shadow" />
       </span>
 
       <!-- Credit required by the OpenStreetMap licence -->
@@ -174,11 +178,34 @@ const tile =
       opacity: 0;
     }
   }
-  /* People who turn off animations get a still, soft circle */
+  /* Glint on the "Montpellier" sticker: a skewed band of light crossing it
+     in under a second, then a pause (every 3.5 s) */
+  .glint::after {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 40%;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.7), transparent);
+    transform: skewX(-20deg) translateX(-150%);
+    animation: glint 3.5s ease-in-out infinite;
+  }
+  @keyframes glint {
+    0% {
+      transform: skewX(-20deg) translateX(-150%);
+    }
+    25%,
+    100% {
+      transform: skewX(-20deg) translateX(350%);
+    }
+  }
+  /* People who turn off animations get a still, soft circle and no glint */
   @media (prefers-reduced-motion: reduce) {
     .pulse {
       animation: none;
       opacity: 0.4;
+    }
+    .glint::after {
+      display: none;
     }
   }
 </style>
