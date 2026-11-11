@@ -58,7 +58,8 @@ const serviceLink =
 
           <!-- Panel: fades in and slides down a few px.
                pt-4 = invisible bridge so it doesn't close while the mouse moves down -->
-          <div class="invisible absolute top-full left-1/2 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition duration-200 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none">
+          <!-- z-10: above the header's bottom line (its after: layer) -->
+          <div class="invisible absolute top-full left-1/2 z-10 -translate-x-1/2 translate-y-2 pt-4 opacity-0 transition duration-200 ease-out group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:transition-none">
             <div class="grid w-172 grid-cols-[1fr_16.5rem] gap-3 rounded-2xl border border-white/60 bg-white/95 p-3 shadow-xl shadow-ink/10 backdrop-blur-xl">
               <!-- Left: the 7 services -->
               <ul class="isolate">
@@ -72,7 +73,6 @@ const serviceLink =
               </ul>
 
               <!-- Right: quote card -->
-              <!-- TODO: confirm "sous 24h" with the client before going live -->
               <div class="flex flex-col justify-between rounded-xl bg-linear-to-br from-primary to-secondary p-5 text-white">
                 <div>
                   <p class="font-heading text-lg leading-snug font-semibold">

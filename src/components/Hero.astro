@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import heroImage from "../assets/hero.png";
+import heroImage from "../assets/hero.jpg";
 import LogoAxial from "../assets/logo-axial.svg";
 import { phoneHref } from "../data/site";
 import { glossy, glossyLime, glossyGlass, arrow } from "../lib/buttons";
@@ -58,8 +58,11 @@ import Sparkle from "./Sparkle.astro";
         <span class="md:whitespace-nowrap"><span class={gradientText}>propreté</span> à Montpellier</span>
       </h1>
 
-      <p class="mt-6 max-w-xl text-lg text-pretty text-white/85">
-        Nettoyage sur mesure de bureaux, immeubles et chantiers, depuis 15 ans.
+      <!-- One line from md up (whitespace-nowrap, no max width).
+           On phones it wraps; text-balance keeps the lines even there, and
+           &nbsp; keeps "depuis 15 ans" together -->
+      <p class="mt-6 max-w-xl text-lg text-balance text-white/85 md:max-w-none md:whitespace-nowrap">
+        Nettoyage sur mesure de bureaux, immeubles et chantiers, depuis&nbsp;15&nbsp;ans.
       </p>
 
       <div class="mt-9 flex flex-col gap-3 sm:flex-row">
