@@ -13,8 +13,10 @@ export const site = {
 // Web3Forms access key, shared by the /devis and /contact forms. Created on
 // web3forms.com with the address that should RECEIVE the messages. It's
 // meant to be public (it can only send to that one address).
-// TODO: replace with the real key once the receiving address is confirmed
-export const web3formsKey = "YOUR_ACCESS_KEY_HERE";
+// TODO: TEST key (form "Axial – site (test)", sends to the company email).
+// Replace it, or change the form's receiving email in the Web3Forms
+// dashboard, once the pro email exists.
+export const web3formsKey = "40ad777f-99be-4596-a71d-14a83d7a751f";
 
 // Links built from the info above, shared by the header and the footer
 // "07 64 00 86 49" -> "tel:+33764008649": tapping it starts a call on a phone
