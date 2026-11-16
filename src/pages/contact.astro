@@ -1,0 +1,163 @@
+---
+// /contact: contact page.
+// Structure from the wireframe: intro, form + photo, FAQ.
+// No address: Axial doesn't receive clients.
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import TitleStreak from "../components/TitleStreak.astro";
+import Faq from "../components/Faq.astro";
+import { site, phoneHref, emailHref, web3formsKey } from "../data/site";
+import { sectionX, eyebrow, gradientText } from "../lib/layout";
+import { glossy, glossyBlue, glossyLime, arrow } from "../lib/buttons";
+// Temporary stock photo (Unsplash), like the other photos on the site
+import photo from "../assets/services/vitres.jpg";
+
+const subjects = ["Question sur nos services", "Demande en cours", "Autre"];
+
+const faq = [
+  { q: "Dans quelles communes intervenez-vous ?", a: "Nous intervenons à Montpellier et dans tout le département de l’Hérault. Indiquez votre commune dans votre message et nous vous confirmerons notre passage." },
+  { q: "Quel est le délai de réponse ?", a: `Nous répondons sous 24 heures ouvrées. Si c’est urgent, appelez-nous au ${site.phone} : vous aurez quelqu’un au bout du fil.` },
+  { q: "Faut-il un contrat pour travailler avec vous ?", a: "Non. Une intervention ponctuelle, une remise en état ou un passage unique se demandent exactement comme un contrat d’entretien régulier." },
+  { q: "Et en dehors des horaires de bureau ?", a: "Le standard répond du lundi au vendredi, de 9h à 12h et de 14h à 18h. Nos équipes, elles, interviennent tôt le matin, en soirée ou le week‑end, selon ce que vos locaux demandent." },
+];
+
+// Shared field styles (same as /devis)
+const label = "block font-heading text-sm font-semibold";
+const input =
+  "mt-2 block w-full rounded-2xl border border-white bg-white/80 px-4 py-3 text-ink shadow-[inset_0_1px_2px_rgb(22_50_79/0.08)] placeholder:text-ink/40 focus:border-primary focus:ring-4 focus:ring-primary/15 focus:outline-none";
+const tile =
+  "flex size-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-primary text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.35),0_8px_18px_-8px_rgb(49_123_185/0.7)]";
+---
+
+<BaseLayout
+  title="Contact | Axial Nettoyage"
+  description="Une question sur le nettoyage de vos locaux à Montpellier ou dans l’Hérault ? Appelez-nous ou écrivez-nous : réponse sous 24 heures ouvrées."
+>
+  <!-- 1. Intro -->
+  <section class:list={[sectionX, "pt-16 md:pt-24"]}>
+    <div class="rounded-4xl border border-white bg-linear-to-br from-white/80 to-powder/40 px-6 py-14 text-center shadow-[0_24px_60px_-24px_rgb(22_50_79/0.3)] md:py-20">
+      <p class={eyebrow}>Contact</p>
+      <h1 class="mt-3 text-4xl leading-tight font-semibold text-balance md:text-6xl">
+        Une question&nbsp;? <span class={gradientText}>Parlons-en</span>
+      </h1>
+      <p class="mx-auto mt-5 max-w-xl text-lg text-pretty text-ink/70">
+        Pour une intervention ponctuelle comme pour un contrat d’entretien, le
+        plus simple est de nous appeler. Nous répondons du lundi au vendredi,
+        de 9h à 12h et de 14h à 18h.
+      </p>
+      <!-- Wrapper does the positioning: glossy already sets "relative" -->
+      <div class="mt-8">
+        <a href={phoneHref} class:list={[glossy, glossyLime, "inline-flex px-7 py-3.5"]}>
+          <Icon name="tabler:phone" class="size-5" />{site.phone}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Form + photo -->
+  <section class:list={[sectionX, "py-20 md:py-28"]}>
+    <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 class="text-3xl leading-tight font-semibold text-balance md:text-4xl">Écrivez-nous</h2>
+        <TitleStreak class="mt-5" />
+        <p class="mt-6 text-lg text-pretty text-ink/70">
+          Décrivez votre besoin en quelques lignes. Si c’est plus simple,
+          appelez-nous&nbsp;: vous aurez quelqu’un directement.
+        </p>
+        <ul class="mt-8 flex flex-col gap-5">
+          <li class="flex items-center gap-4">
+            <span class={tile}><Icon name="tabler:phone" class="size-5" /></span>
+            <div>
+              <p class="text-sm text-ink/60">Téléphone</p>
+              <a href={phoneHref} class="font-heading text-lg font-semibold text-primary hover:text-ink">{site.phone}</a>
+            </div>
+          </li>
+          <li class="flex items-center gap-4">
+            <span class={tile}><Icon name="tabler:mail" class="size-5" /></span>
+            <div>
+              <p class="text-sm text-ink/60">Email</p>
+              <a href={emailHref} class="font-heading font-semibold break-all text-primary hover:text-ink">{site.email}</a>
+            </div>
+          </li>
+        </ul>
+
+        <form
+          id="contact-form"
+          action="https://api.web3forms.com/submit"
+          method="POST"
+          class="mt-10 flex flex-col gap-6 rounded-4xl border border-white bg-white/60 p-6 shadow-[0_24px_60px_-24px_rgb(22_50_79/0.35)] backdrop-blur-xl md:p-8"
+        >
+          <!-- Web3Forms settings (hidden) + honeypot against bots -->
+          <input type="hidden" name="access_key" value={web3formsKey} />
+          <input type="hidden" name="from_name" value="Site Axial Nettoyage" />
+          <input type="hidden" name="subject" value="Nouveau message depuis le site" />
+          <input type="checkbox" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" />
+
+          <div>
+            <label for="name" class={label}>Nom et prénom *</label>
+            <input id="name" name="Nom" required autocomplete="name" placeholder="Jean Dupont" class={input} />
+          </div>
+          <div class="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label for="phone" class={label}>Téléphone *</label>
+              <input id="phone" name="Téléphone" type="tel" required autocomplete="tel" placeholder="06 12 34 56 78" class={input} />
+            </div>
+            <div>
+              <label for="email" class={label}>Email *</label>
+              <!-- name="email": Web3Forms uses it as the reply-to address -->
+              <input id="email" name="email" type="email" required autocomplete="email" placeholder="vous@entreprise.fr" class={input} />
+            </div>
+          </div>
+          <div>
+            <label for="topic" class={label}>Objet</label>
+            <select id="topic" name="Objet" class={input}>
+              {subjects.map((s) => <option>{s}</option>)}
+            </select>
+          </div>
+          <div>
+            <label for="message" class={label}>Message *</label>
+            <textarea id="message" name="Message" rows="5" required placeholder="Votre demande, vos locaux, vos contraintes d’horaires…" class={input}></textarea>
+          </div>
+          <div>
+            <button type="submit" class:list={[glossy, glossyBlue, "inline-flex px-7 py-3.5 disabled:opacity-60"]}>
+              <span data-label>Envoyer le message</span>
+              <Icon name="tabler:arrow-right" class={arrow} />
+            </button>
+            <p class="mt-4 text-sm text-pretty text-ink/60">
+              Vos informations servent uniquement à répondre à votre message. En savoir plus dans notre{" "}
+              <a href="/confidentialite" class="underline hover:text-primary">politique de confidentialité</a>.
+            </p>
+            <!-- Result message, filled by the script. role="status" = read aloud by screen readers -->
+            <p data-result role="status" class="mt-4 hidden rounded-2xl px-4 py-3 font-medium"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Photo: follows the page while the form scrolls. alt="" = decorative -->
+      <div class="hidden lg:block">
+        <Image
+          src={photo}
+          alt=""
+          widths={[600, 900, 1200]}
+          sizes="45vw"
+          class="sticky top-32 aspect-4/5 w-full rounded-4xl object-cover shadow-[0_24px_60px_-24px_rgb(22_50_79/0.45)]"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. FAQ -->
+  <Faq title="Avant de nous contacter" intro="Ce qu’on nous demande le plus souvent avant un premier appel." items={faq} />
+</BaseLayout>
+
+<script>
+  import { sendForm } from "../lib/sendForm";
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  if (form) {
+    sendForm(form, {
+      subject: (v) => `Nouveau message – ${v["Objet"] ?? ""}`,
+      success: "Merci, votre message est bien envoyé. Nous vous répondons sous 24 heures ouvrées.",
+    });
+  }
+</script>
